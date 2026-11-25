@@ -36,6 +36,7 @@
 
   <form id="form">
     <label>Pangalan <input id="pangalan" maxlength="80" required></label>
+    <label>Address <input id="address" maxlength="150" required></label>
     <label>Mensahe <textarea id="mensahe" maxlength="500" required></textarea></label>
     <button id="send" type="submit">I-save sa Sheet</button>
     <p id="status" role="status"></p>
@@ -70,7 +71,7 @@
         p.textContent = e.mensahe;
         const m = document.createElement('div');
         m.className = 'meta';
-        m.textContent = e.pangalan + ' • ' + new Date(e.petsa).toLocaleString('fil-PH');
+        m.textContent = e.pangalan + (e.address ? ' • ' + e.address : '') + ' • ' + new Date(e.petsa).toLocaleString('fil-PH');
         div.append(p, m);
         list.appendChild(div);
       });
@@ -89,6 +90,7 @@
         headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // iwas CORS preflight
         body: JSON.stringify({
           pangalan: document.getElementById('pangalan').value,
+          address: document.getElementById('address').value,
           mensahe: document.getElementById('mensahe').value
         })
       });
