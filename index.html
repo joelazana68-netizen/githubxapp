@@ -191,6 +191,16 @@
   .stepper .val span { line-height: 1; }
   .err:empty { display: none; }
 
+  /* Trivia ni Moki */
+  nav { flex-wrap: wrap; }
+  .tgb { margin-left: auto; background: var(--plum); color: var(--on-plum); border-color: var(--plum); }
+  .tgb:hover { filter: brightness(1.1); }
+  .tgb + .ptog { margin-left: 0; }
+  .glasses { display: none; }
+  #moki.smart .glasses { display: block; animation: pop .4s cubic-bezier(.2,1.4,.4,1); }
+  .bubble.sell .tq { display: block; font: 800 .75rem "Gabarito", sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); margin-bottom: 3px; }
+  .bubble.sell .opts button { text-align: left; }
+
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .ok circle, .ok path { stroke-dashoffset: 0 !important; } }
 </style>
 </head>
@@ -199,6 +209,7 @@
   <nav>
     <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e9a23b"/><path d="M8 22c0-8 5-13 12-13s12 5 12 13c-8 2-16 2-24 0z" fill="#5b2f5f"/><rect x="16" y="22" width="8" height="10" rx="4" fill="#fff"/></svg>
     Mushroom Pre-Order
+    <button class="ptog tgb" id="triviaBtn" type="button">Trivia ni Moki<b id="tScore"></b></button>
     <button class="ptog" id="petToggle" type="button" aria-pressed="true">Itago si Moki</button>
   </nav>
 
@@ -293,6 +304,7 @@
       <ellipse cx="164" cy="289" rx="12" ry="7" fill="#ff8fab" opacity=".55"/><ellipse cx="256" cy="289" rx="12" ry="7" fill="#ff8fab" opacity=".55"/>
       <g class="look" id="look">
         <g class="eyes-open"><g class="eye"><circle cx="186" cy="270" r="11" fill="#2b1d2f"/><circle cx="189.5" cy="266" r="3.6" fill="#fff"/></g><g class="eye"><circle cx="234" cy="270" r="11" fill="#2b1d2f"/><circle cx="237.5" cy="266" r="3.6" fill="#fff"/></g></g>
+        <g class="glasses" fill="none" stroke="#2b1d2f" stroke-width="3.2"><circle cx="186" cy="270" r="16"/><circle cx="234" cy="270" r="16"/><path d="M202 268q8-5 16 0"/></g>
         <g class="eyes-happy" fill="none" stroke="#2b1d2f" stroke-width="4.5" stroke-linecap="round"><path d="M175 272q11-13 22 0"/><path d="M223 272q11-13 22 0"/></g>
       </g>
       <path class="mouth" d="M200 286q10 9 20 0" fill="none" stroke="#2b1d2f" stroke-width="3.6" stroke-linecap="round"/>
@@ -540,7 +552,11 @@
   // Hawakan, ihagis, o pindutin si Moki
   const pokes = ['Hihi, kiliti!', 'Boing!', 'Huy, hindi pa ako luto!', 'Uy, nag-hello ka!'];
   let pi = 0, drag = null;
-  function poke() { say(pokes[pi++ % pokes.length]); joy('poke', 700); hop(620); }
+  function poke() {
+    joy('poke', 700); hop(620);
+    if (!sell.active && ++pi % 4 === 0) { offer('Alam mo ba, marunong akong mag-trivia! Gusto mo ng tanong tungkol sa kabute?', [['Game!', triviaStart, 1], ['Mamaya na', endSell]]); return; }
+    say(pokes[pi % pokes.length]);
+  }
   moki.addEventListener('pointerdown', e => {
     e.preventDefault();
     drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, t0: performance.now(), moved: false, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vy: 0 };
@@ -604,7 +620,7 @@
     clearTimeout(sayTimer); clearTimeout(sellTimer); sellTimer = setTimeout(endSell, 30000);
   }
   function endSell() {
-    clearTimeout(sellTimer); sell.active = false; M.idle = 0;
+    clearTimeout(sellTimer); sell.active = false; M.idle = 0; moki.classList.remove('smart');
     bubble.classList.remove('sell'); bubble.classList.add('off'); $('sayOpts').innerHTML = '';
   }
   function sad(ms) { moki.classList.add('sad'); setTimeout(() => moki.classList.remove('sad'), ms); }
@@ -661,6 +677,50 @@
     if (sell.from === 'submit') setTimeout(() => $('form').requestSubmit(), 500);
   }
   kilo.addEventListener('change', () => { if (Number(kilo.value) === 1) pitchSoon('kilo'); });
+
+
+  // ---- Trivia ni Moki: totoong kaalaman tungkol sa kabute (unang sagot = tama, hinahalo bago ipakita) ----
+  const QUIZ = [
+    { q: 'Anong uri ng nilalang ang mushroom?', a: ['Fungus', 'Halaman', 'Hayop', 'Bakterya'], f: 'Fungus ang mushroom. Mas malapit pa nga ito sa hayop kaysa sa halaman!' },
+    { q: 'Bakit hindi berde ang mushroom?', a: ['Wala itong chlorophyll', 'Kulang ito sa tubig', 'Takot ito sa araw'], f: 'Walang chlorophyll ang mushroom, kaya hindi ito nagpo-photosynthesis at kumukuha ito ng sustansya sa paligid.' },
+    { q: 'Ano ang tawag sa mga hibla na parang ugat ng mushroom sa ilalim ng lupa?', a: ['Mycelium', 'Spora', 'Tubers', 'Chlorophyll'], f: 'Ang mycelium ang katawan ng fungus. Ang mushroom na kinakain natin ay bunga lang nito.' },
+    { q: 'Paano nagpaparami ang mushroom?', a: ['Sa pamamagitan ng spora', 'Sa buto', 'Sa itlog'], f: 'Napakaliliit na spora ang kumakalat sa hangin at tumutubo kapag nakakita ng angkop na lugar.' },
+    { q: 'Ilang porsiyento ng sariwang mushroom ang tubig?', a: ['Mga 90%', 'Mga 50%', 'Mga 30%'], f: 'Mga 90% tubig ito, kaya lumiliit ang mushroom kapag niluto.' },
+    { q: 'Anong bitamina ang nadaragdagan sa mushroom kapag nasikatan ng araw (UV)?', a: ['Bitamina D', 'Bitamina C', 'Bitamina K'], f: 'Gumagawa ng bitamina D ang mushroom kapag naarawan, parang balat natin.' },
+    { q: 'Ayon sa lawak, alin ang isa sa pinakamalaking buhay na organismo sa mundo?', a: ['Honey fungus sa Oregon, USA', 'Puno ng niyog', 'Asul na balyena'], f: 'Isang honey fungus sa Oregon ang kumakalat sa mahigit 9 na kilometro kuwadrado sa ilalim ng lupa.' },
+    { q: 'Puwede bang kainin ang lahat ng ligaw na kabute?', a: ['Hindi, may nakalalason', 'Oo, basta luto', 'Oo, basta makulay'], f: 'Huwag kumain ng ligaw na kabute kung hindi sigurado. Hindi nawawala sa pagluluto ang lason ng ilan.' },
+    { q: 'Saan pinakamainam itago ang sariwang mushroom sa ref?', a: ['Sa papel na supot o basket', 'Sa saradong basang plastik', 'Sa tabi ng bintana'], f: 'Kailangan nitong huminga. Ang papel ay sumisipsip ng sobrang halumigmig kaya hindi agad nabubulok.' }
+  ];
+  const ROUND = 5, T = { n: 0, pool: [], score: 0 };
+  const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+
+  function triviaStart() {
+    if (!M.on) $('petToggle').click();
+    T.pool = shuffle(QUIZ.map((_, i) => i)); T.n = 0; T.score = 0;
+    moki.classList.add('smart'); toCard(); joy('happy', 1200);
+    offer('Trivia time! ' + ROUND + ' tanong tungkol sa kabute ang ihahanda ni Moki. Handa ka na ba?', [['Game!', triviaAsk, 1], ['Mamaya na', triviaEnd]]);
+  }
+  function triviaAsk() {
+    const it = QUIZ[T.pool[T.n++]];
+    offer('Tanong ' + T.n + ' sa ' + ROUND + ': ' + it.q,
+      shuffle(it.a.map((t, i) => [t, () => triviaAns(i === 0, it)])));
+  }
+  function triviaAns(ok, it) {
+    if (ok) { T.score++; joy('happy', 1800); hop(600); } else sad(2600);
+    offer((ok ? 'Tama! ' : 'Naku, mali. Ang tamang sagot ay "' + it.a[0] + '". ') + it.f,
+      T.n < ROUND ? [['Susunod', triviaAsk, 1], ['Tama na', triviaEnd]] : [['Tingnan ang score', triviaResult, 1]]);
+  }
+  function triviaResult() {
+    const s = T.score, msg = s === ROUND ? 'Perfect! Ikaw na ang kabute master!' : s >= 3 ? 'Magaling! Marami ka nang alam tungkol sa kabute.' : 'Okay lang, ngayon alam mo na!';
+    $('tScore').textContent = ' · ' + s + '/' + ROUND; joy('happy', 2400); if (s >= 3) hop(700);
+    offer('Score mo: ' + s + ' sa ' + ROUND + '. ' + msg, [['Ulitin', triviaStart, 1], ['Mag-reserve na', triviaEnd]]);
+  }
+  function triviaEnd() { endSell(); if (T.n) say('Salamat sa laro! Puwede mo nang i-reserve ang mushroom mo.'); }
+  $('triviaBtn').addEventListener('click', triviaStart);
+  setTimeout(() => {   // minsang paanyaya kapag wala pang ginagawa
+    if (M.on && !sell.active && !sell.done && !$('pangalan').value && document.activeElement !== $('pangalan'))
+      offer('Alam mo bang marunong mag-trivia si Moki? Subukan mo!', [['Game!', triviaStart, 1], ['Mamaya na', endSell]]);
+  }, 25000);
 
   $('petToggle').addEventListener('click', e => {
     M.on = !M.on; pet.classList.toggle('off', !M.on);
