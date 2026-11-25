@@ -131,6 +131,7 @@
     <form id="form">
       <label>Pangalan <input id="pangalan" maxlength="80" required autocomplete="name"></label>
       <label>Address <input id="address" maxlength="150" required autocomplete="street-address"></label>
+      <label>Farm Location <input id="farm" maxlength="150" required></label>
       <label>Mensahe <textarea id="mensahe" maxlength="500" required></textarea></label>
       <button id="send" type="submit">I-save sa Sheet</button>
       <p id="status" role="status"></p>
@@ -144,7 +145,7 @@
 </main>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbziDZbzsWxvar1anW6ZnS0SS36fu0Y6GfOlnmnU6fr0-1EXGgAUcz0Ntbgpr432k96KkQ/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwDzUwfg9-E4MBGbfdiG-3mlHf8PdA254vtHk-6Watlt6M65y4-1IRfMuS2drV7PvKaPw/exec';
 
   const form = document.getElementById('form');
   const statusEl = document.getElementById('status');
@@ -179,6 +180,7 @@
       const who = document.createElement('span'); who.className = 'who'; who.textContent = e.pangalan;
       meta.appendChild(who);
       if (e.address) { const a = document.createElement('span'); a.innerHTML = PIN; a.append(e.address); meta.appendChild(a); }
+      if (e.farm) { const f = document.createElement('span'); f.textContent = '🌾 Farm: ' + e.farm; meta.appendChild(f); }
       const d = document.createElement('span'); d.textContent = new Date(e.petsa).toLocaleString('fil-PH'); meta.appendChild(d);
       body.append(p, meta); card.append(av, body); list.appendChild(card);
     });
@@ -217,6 +219,7 @@
         body: JSON.stringify({
           pangalan: document.getElementById('pangalan').value,
           address: document.getElementById('address').value,
+          farm: document.getElementById('farm').value,
           mensahe: document.getElementById('mensahe').value
         })
       });
