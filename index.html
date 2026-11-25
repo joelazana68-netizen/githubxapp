@@ -170,6 +170,20 @@
   .stat span { display: block; font-size: .85rem; color: var(--muted); line-height: 1.2; }
   .stat b { font: 800 1.6rem/1.2 "Gabarito", sans-serif; }
 
+  /* Sales talk ni Moki */
+  .bubble.sell { pointer-events: auto; min-width: 220px; max-width: min(310px, 88vw); }
+  .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+  .opts:empty { display: none; }
+  .opts button { font: 700 .85rem "Nunito Sans", sans-serif; padding: 6px 12px; border: 2px solid var(--plum); background: transparent; color: var(--plum); border-radius: 999px; cursor: pointer; transition: background .2s, color .2s; }
+  .opts button:hover, .opts button.main { background: var(--plum); color: var(--on-plum); }
+  .opts button:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .mouth-sad, .tear { display: none; }
+  .tear { transform-box: fill-box; }
+  #moki.sad .mouth, #moki.sad .mouth-open { display: none; }
+  #moki.sad .mouth-sad, #moki.sad .tear { display: block; }
+  #moki.sad .tear { animation: tear 1.1s ease-in infinite; }
+  @keyframes tear { from { transform: translateY(0); opacity: 1; } to { transform: translateY(16px); opacity: 0; } }
+
   /* Ayos ng form: tuwid at magkakapantay */
   .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .chip { text-align: center; padding: 8px 0; white-space: nowrap; }
@@ -283,13 +297,24 @@
       </g>
       <path class="mouth" d="M200 286q10 9 20 0" fill="none" stroke="#2b1d2f" stroke-width="3.6" stroke-linecap="round"/>
       <g class="mouth-open"><path d="M198 283q12 22 24 0z" fill="#7a2a45"/><ellipse cx="210" cy="294" rx="6" ry="3.2" fill="#ff8fab"/></g>
+      <g class="mouth-sad"><path d="M200 295q10-10 20 0" fill="none" stroke="#2b1d2f" stroke-width="3.6" stroke-linecap="round"/></g>
+      <ellipse class="tear" cx="168" cy="282" rx="3.2" ry="5" fill="#7fc8ff"/>
     </g></g></g>
   </svg>
 </div>
-<div class="bubble off" id="say" role="status"><span id="sayTxt">Hi! Ako si Moki.</span></div>
+<div class="bubble off" id="say" role="status"><span id="sayTxt">Hi! Ako si Moki.</span><div class="opts" id="sayOpts"></div></div>
 
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbwEyslb4CL9VNEOvNQSEiO6DNQje2JX_hWcJ2jZouZluXZ4PJII-Y0ZKY_-YH8O3Wiujw/exec';
+
+  // ---- Sales talk ni Moki: punan lang ng TOTOONG detalye. Kapag walang laman, hindi ito babanggitin. ----
+  // Huwag maglagay ng hindi totoo (hal. pekeng "limited stock"), mawawalan ng tiwala ang customer.
+  const SALES = {
+    pricePerKilo: 0,   // hal. 180 -> sasabihin ni Moki kung magkano ang dagdag na kilo
+    bulkNote: '',      // hal. 'Libreng delivery sa 3 kilo pataas'
+    freshNote: ''      // hal. 'Pinipitas namin ito kaninang umaga'
+  };
+  let STATS = { orders: 0, kilos: 0 };
 
   const $ = id => document.getElementById(id);
   const kilo = $('kilo'), err = $('err'), go = $('go');
@@ -301,10 +326,10 @@
     b.onclick = () => setKilo(n); $('chips').appendChild(b);
   });
 
-  function setKilo(v) {
+  function setKilo(v, quiet) {
     v = Math.min(500, Math.max(0.5, Math.round(v * 2) / 2));
     kilo.value = v; syncChips();
-    say(v >= 10 ? 'Wow, ' + v + ' kilo! Marami!' : v + ' kilo. Sige!');
+    if (!quiet) { say(v >= 10 ? 'Wow, ' + v + ' kilo! Marami!' : v + ' kilo. Sige!'); if (v === 1) pitchSoon('kilo'); }
     kilo.classList.remove('bump'); void kilo.offsetWidth; kilo.classList.add('bump');
   }
   function syncChips() { [...$('chips').children].forEach((c, i) => c.classList.toggle('on', Number(kilo.value) === [1, 2, 5, 10][i])); }
@@ -327,6 +352,7 @@
   async function loadStats() {
     try {
       const d = await (await fetch(API_URL)).json();
+      STATS = { orders: d.orders || 0, kilos: d.kilos || 0 };
       countUp($('sOrders'), d.orders || 0, false);
       countUp($('sKilos'), d.kilos || 0, true);
     } catch (e) { /* hindi kritikal ang stats */ }
@@ -343,6 +369,8 @@
     err.textContent = '';
     if (!name) { showErr('Ilagay ang pangalan mo.'); $('pangalan').focus(); return; }
     if (!(k >= 0.5 && k <= 500)) { showErr('Ilagay ang kilo, mula 0.5 hanggang 500.'); kilo.focus(); return; }
+    if (sell.active) endSell();
+    else if (k === 1 && !sell.pitched && !sell.done && M.on) { start('submit'); return; }
 
     go.disabled = true; go.classList.add('busy'); $('goTxt').textContent = 'Sine-save…'; say('Sandali lang, sine-save ko…');
     try {
@@ -367,7 +395,7 @@
   });
 
   $('again').onclick = () => {
-    $('card').classList.remove('done'); $('pangalan').value = ''; setKilo(1); $('pangalan').focus();
+    $('card').classList.remove('done'); $('pangalan').value = ''; setKilo(1, true); $('pangalan').focus();
   };
 
   // ---- Si Moki: malayang gumagala ----
@@ -384,8 +412,9 @@
   }
   const floorY = () => innerHeight - 4;
 
+  const sell = { active: false, pitched: 0, done: false, declines: 0, from: '' };
   function say(t) {
-    if (!M.on) return;
+    if (!M.on || sell.active) return;
     sayTxt.textContent = t;
     bubble.classList.remove('off', 'talk'); void bubble.offsetWidth; bubble.classList.add('talk');
     clearTimeout(sayTimer); sayTimer = setTimeout(() => bubble.classList.add('off'), 4200);
@@ -561,9 +590,81 @@
   });
   kilo.addEventListener('focus', () => say('Ilang kilo ang gusto mo?'));
 
+  // ---- Sales talk: magtanong, magrekomenda, sumagot sa dahilan ----
+  let sellTimer, pitchTimer;
+  function offer(text, opts) {
+    sell.active = true; M.idle = -1e9;
+    sayTxt.textContent = text;
+    const box = $('sayOpts'); box.innerHTML = '';
+    opts.forEach(([label, fn, main]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+      if (main) b.className = 'main'; b.onclick = fn; box.appendChild(b);
+    });
+    bubble.classList.add('sell'); bubble.classList.remove('off', 'talk'); void bubble.offsetWidth; bubble.classList.add('talk');
+    clearTimeout(sayTimer); clearTimeout(sellTimer); sellTimer = setTimeout(endSell, 30000);
+  }
+  function endSell() {
+    clearTimeout(sellTimer); sell.active = false; M.idle = 0;
+    bubble.classList.remove('sell'); bubble.classList.add('off'); $('sayOpts').innerHTML = '';
+  }
+  function sad(ms) { moki.classList.add('sad'); setTimeout(() => moki.classList.remove('sad'), ms); }
+
+  const first = () => $('pangalan').value.trim().split(' ')[0];
+  const extra = n => SALES.pricePerKilo ? ' Dagdag na ₱' + Math.round(SALES.pricePerKilo * (n - 1)) + ' lang.' : '';
+  const bulk = () => SALES.bulkNote ? ' ' + SALES.bulkNote + '.' : '';
+  const fresh = () => SALES.freshNote ? ' ' + SALES.freshNote + '.' : '';
+  function proof(n) {   // totoong datos mula sa Sheet
+    if (STATS.orders < 3) return '';
+    const avg = Math.round(STATS.kilos / STATS.orders * 10) / 10;
+    return avg > n ? ' Ang karaniwang order dito ay ' + avg + ' kilo.' : '';
+  }
+
+  function pitchSoon(from) {
+    if (!M.on || sell.done || sell.active || sell.pitched >= 2) return;
+    clearTimeout(pitchTimer);
+    pitchTimer = setTimeout(() => { if (Number(kilo.value) === 1 && !sell.active) start(from); }, 700);
+  }
+  function start(from) {
+    sell.pitched++; sell.from = from; toCard();
+    const n = first();
+    offer((from === 'submit' ? 'Teka po' + (n ? ', ' + n : '') + '! ' : '') + 'Isang kilo lang? Ilan ba kayong kakain sa bahay?' + fresh(), [
+      ['1-2 tao', () => rec(1)], ['3-4 tao', () => rec(2)], ['5 pataas', () => rec(3)], ['Pang-tinda', () => rec(5)], ['1 kilo lang po', decline]
+    ]);
+  }
+  function rec(n) {
+    joy('happy', 900);
+    if (n === 1) offer('Swak ang 1 kilo sa 1-2 tao! Pero masarap ito sa sinigang, adobo at sisig. Gusto mo ng 2 kilo para may extra sa susunod na ulam?' + extra(2) + proof(2), [['Sige, 2 kilo', () => accept(2), 1], ['1 kilo lang po', decline]]);
+    else if (n === 2) offer('Para sa 3-4 na tao, karaniwang isang ulam lang ang kasya sa 1 kilo. Kung gusto n\'yo ng dalawang ulam, 2 kilo ang swak!' + extra(2) + proof(2), [['Sige, 2 kilo', () => accept(2), 1], ['1 kilo lang po', decline]]);
+    else if (n === 3) offer('Dami n\'yo pala, ang saya! Para sa 5 pataas, 3 kilo ang swak para walang mabitin.' + extra(3) + bulk() + proof(3), [['Sige, 3 kilo', () => accept(3), 1], ['2 kilo na lang', () => accept(2)], ['1 kilo lang po', decline]]);
+    else offer('Negosyante pala! Para hindi kayo mabitin sa paninda, mas swak ang 5 o 10 kilo.' + extra(5) + bulk() + proof(5), [['5 kilo', () => accept(5), 1], ['10 kilo', () => accept(10)], ['1 kilo muna', decline]]);
+  }
+  function accept(n) {
+    setKilo(n, true); endSell(); joy('happy', 2200); hop(700);
+    say('Yehey, ' + n + ' kilo! Pindutin mo na ang "I-reserve" sa baba.');
+  }
+  function decline() {
+    sell.declines++;
+    if (sell.declines > 1) return final();
+    sad(3200);
+    offer('Ay, sige po... 1 kilo. Medyo naiyak lang si Moki ng konti, hihi! Pwede ko bang malaman kung bakit? Baka matulungan kita.', [
+      ['Baka mabulok', () => obj('rot')], ['Baka mahal', () => obj('cost')], ['Hindi pa sigurado', () => obj('unsure')], ['Sapat na ang 1 kilo', final]
+    ]);
+  }
+  function obj(kind) {
+    if (kind === 'rot') offer('Madali lang iwasan! Ilagay sa ref sa papel na supot o basket (huwag sa saradong plastik), tatagal ito ng ilang araw. Puwede ring i-sauté at i-freeze. Subukan mo ang 1.5 kilo?' + proof(1.5), [['Sige, 1.5 kilo', () => accept(1.5), 1], ['1 kilo lang po', final]]);
+    else if (kind === 'cost') offer('Pre-order pa lang ito, walang pilitan! Kahit kalahating kilo lang ang idagdag mo, sapat na ang 1.5 kilo para sa dalawang ulam.' + extra(1.5) + bulk() + proof(1.5), [['Sige, 1.5 kilo', () => accept(1.5), 1], ['1 kilo lang po', final]]);
+    else offer('Okay lang! Puwede ring hatiin sa kapitbahay o kamag-anak, ikaw pa ang bida sa handaan. Ano kung 2 kilo, tapos hatian?' + proof(2), [['Sige, 2 kilo', () => accept(2), 1], ['1.5 kilo', () => accept(1.5)], ['1 kilo lang po', final]]);
+  }
+  function final() {
+    sell.done = true; endSell(); joy('happy', 1600);
+    say('Sige po, 1 kilo! Salamat sa tiwala. Puwede mo pa ring dagdagan anumang oras.');
+    if (sell.from === 'submit') setTimeout(() => $('form').requestSubmit(), 500);
+  }
+  kilo.addEventListener('change', () => { if (Number(kilo.value) === 1) pitchSoon('kilo'); });
+
   $('petToggle').addEventListener('click', e => {
     M.on = !M.on; pet.classList.toggle('off', !M.on);
-    if (!M.on) { bubble.classList.add('off'); clearTimeout(sayTimer); } else { spawn(innerWidth * .5); last = performance.now(); say('Balik na ako!'); }
+    if (!M.on) { endSell(); bubble.classList.add('off'); clearTimeout(sayTimer); } else { spawn(innerWidth * .5); last = performance.now(); say('Balik na ako!'); }
     e.currentTarget.setAttribute('aria-pressed', M.on);
     e.currentTarget.textContent = M.on ? 'Itago si Moki' : 'Ipakita si Moki';
   });
