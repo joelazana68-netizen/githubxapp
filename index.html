@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GITHUBXAPP</title>
+<style>
+  :root { --bg:#f3f6f4; --ink:#14231c; --muted:#5b6b63; --line:#cfdad4; --accent:#1f6f50; --card:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#101815; --ink:#e6efe9; --muted:#93a59b; --line:#2a3a33; --accent:#4fb88a; --card:#17221d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 Georgia, "Times New Roman", serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+  form { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; }
+  label { font-size: .9rem; color: var(--muted); display: grid; gap: 4px; }
+  input, textarea { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  textarea { min-height: 90px; resize: vertical; }
+  button { font: inherit; font-weight: bold; background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 11px 16px; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  #status { min-height: 1.4em; font-size: .9rem; color: var(--muted); margin: 0; }
+  h2 { font-size: 1.15rem; margin: 36px 0 12px; }
+  .entry { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 18px; }
+  .entry p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .meta { font-size: .85rem; color: var(--muted); }
+  .empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>GITHUBXAPP</h1>
+  <p class="sub">Ang isusulat mo dito ay mase-save sa Google Sheet.</p>
+
+  <form id="form">
+    <label>Pangalan <input id="pangalan" maxlength="80" required></label>
+    <label>Mensahe <textarea id="mensahe" maxlength="500" required></textarea></label>
+    <button id="send" type="submit">I-save sa Sheet</button>
+    <p id="status" role="status"></p>
+  </form>
+
+  <h2>Mga naka-save</h2>
+  <div id="list"><p class="empty">Naglo-load…</p></div>
+</main>
+
+<script>
+  // PALITAN ito ng Web app URL galing sa Apps Script deployment
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwZUYULySRVTgo4AxGld3FYooFbdYWx0sz3dbtSiqZZw3pbty4P7mHD_4iZSTaUdMYHkA/exec';
+
+  const form = document.getElementById('form');
+  const statusEl = document.getElementById('status');
+  const list = document.getElementById('list');
+  const sendBtn = document.getElementById('send');
+
+  async function load() {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      list.textContent = '';
+      if (!data.entries.length) {
+        list.innerHTML = '<p class="empty">Wala pang laman. Ikaw ang una.</p>';
+        return;
+      }
+      data.entries.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        const p = document.createElement('p');
+        p.textContent = e.mensahe;
+        const m = document.createElement('div');
+        m.className = 'meta';
+        m.textContent = e.pangalan + ' • ' + new Date(e.petsa).toLocaleString('fil-PH');
+        div.append(p, m);
+        list.appendChild(div);
+      });
+    } catch (err) {
+      list.innerHTML = '<p class="empty">Hindi ma-load. Tingnan kung tama ang API_URL.</p>';
+    }
+  }
+
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    sendBtn.disabled = true;
+    statusEl.textContent = 'Sine-save…';
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // iwas CORS preflight
+        body: JSON.stringify({
+          pangalan: document.getElementById('pangalan').value,
+          mensahe: document.getElementById('mensahe').value
+        })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      form.reset();
+      statusEl.textContent = 'Na-save na!';
+      load();
+    } catch (err) {
+      statusEl.textContent = 'May error: ' + err.message;
+    } finally {
+      sendBtn.disabled = false;
+    }
+  });
+
+  load();
+</script>
+</body>
+</html>
