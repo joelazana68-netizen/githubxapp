@@ -3,290 +3,267 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GITHUBXAPP</title>
+<title>Mushroom Pre-Order</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@600;800&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#f3f6f4; --surface:#fff; --ink:#14201a; --muted:#5d6b63; --line:#dce4df; --soft:#e8f1ec;
-    --brand:#14573a; --on-brand:#fff; --accent:#e0a526; --band:#0f3d28; --danger:#b3261e; --ok:#14573a;
-    --shadow:0 1px 2px rgba(15,40,28,.06), 0 8px 24px rgba(15,40,28,.07);
+    --bg:#f0ecf1; --surface:#fff; --ink:#2b1d2f; --muted:#6c5d70; --line:#ddd3df; --plum:#5b2f5f; --on-plum:#fff;
+    --amber:#e9a23b; --cap:#8a4f3a; --stem:#efe3d2; --soft:#f6f1f7; --danger:#b3261e;
+    --shadow:0 2px 4px rgba(43,29,47,.06), 0 16px 40px rgba(43,29,47,.1);
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#0d1410; --surface:#15201a; --ink:#e8efea; --muted:#9aaba1; --line:#26352c; --soft:#1b2a21;
-      --brand:#58c28d; --on-brand:#08140d; --accent:#f0b93a; --band:#0a2418; --danger:#ff8a80; --ok:#58c28d; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); }
+    :root { --bg:#161018; --surface:#221826; --ink:#f3ebf5; --muted:#b3a3b8; --line:#382a3d; --plum:#d9a6dd; --on-plum:#24112a;
+      --amber:#f0b24b; --cap:#a8644c; --stem:#e6d8c6; --soft:#2b2030; --danger:#ff8a80; --shadow:0 2px 4px rgba(0,0,0,.3), 0 16px 40px rgba(0,0,0,.35); }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 "Source Sans 3", system-ui, sans-serif; }
-  h1, h2, h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; margin: 0; letter-spacing: -.01em; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font: 400 17px/1.55 "Nunito Sans", system-ui, sans-serif; overflow-x: hidden; }
+  h1, h2 { font-family: "Gabarito", system-ui, sans-serif; margin: 0; letter-spacing: -.015em; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
 
-  /* BAND */
-  .band {
-    background: var(--band); color: #fff; padding: 0 20px 96px; position: relative; overflow: hidden;
-    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 2px, transparent 2px 26px);
-  }
-  .band::after { content: ""; position: absolute; right: -80px; top: -120px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(224,165,38,.28), transparent 65%); animation: glow 7s ease-in-out infinite alternate; }
-  @keyframes glow { to { transform: translate(-40px, 30px) scale(1.15); } }
-  .wrap { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
-  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; animation: down .6s both; }
-  .logo { display: flex; align-items: center; gap: 10px; font: 700 1.15rem "Bricolage Grotesque", sans-serif; }
-  .logo svg { width: 34px; height: 34px; }
-  .pill { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; padding: 6px 14px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(255,255,255,.07); }
-  .dot { width: 9px; height: 9px; border-radius: 50%; background: #b8c4bd; }
-  .pill.on .dot { background: #5fe3a1; box-shadow: 0 0 0 0 rgba(95,227,161,.7); animation: ping 2s infinite; }
-  .pill.off .dot { background: #ff8a80; }
-  @keyframes ping { 70% { box-shadow: 0 0 0 9px rgba(95,227,161,0); } 100% { box-shadow: 0 0 0 0 rgba(95,227,161,0); } }
-  @keyframes down { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-  .hero { padding-top: 34px; max-width: 640px; animation: up .7s .1s both; }
-  .hero h1 { font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.08; font-weight: 700; }
-  .hero p { margin: 14px 0 0; color: #cfe0d6; font-size: 1.1rem; }
-  @keyframes up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  nav { display: flex; align-items: center; gap: 10px; padding: 24px 0; font: 800 1.15rem "Gabarito", sans-serif; animation: down .6s both; }
+  nav svg { width: 34px; height: 34px; }
+  @keyframes down { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+  @keyframes up { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 
-  /* STATS */
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: -58px; position: relative; z-index: 2; }
-  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow); animation: up .6s both; transition: transform .25s, box-shadow .25s; }
-  .stat:nth-child(1) { animation-delay: .25s; } .stat:nth-child(2) { animation-delay: .35s; } .stat:nth-child(3) { animation-delay: .45s; }
-  .stat:hover { transform: translateY(-4px); }
-  .stat span { color: var(--muted); font-size: .92rem; }
-  .stat strong { display: block; font: 700 2rem/1.15 "Bricolage Grotesque", sans-serif; margin-top: 2px; }
-  .stat:nth-child(1) { border-top: 4px solid var(--brand); } .stat:nth-child(2) { border-top: 4px solid var(--accent); } .stat:nth-child(3) { border-top: 4px solid var(--muted); }
+  .hero { display: grid; gap: 36px; align-items: center; padding: 12px 0 72px; }
+  @media (min-width: 900px) { .hero { grid-template-columns: 1.05fr 1fr; gap: 56px; padding-top: 28px; } }
+  h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.04; font-weight: 800; animation: up .7s .1s both; }
+  h1 em { font-style: normal; color: var(--plum); }
+  .lead { color: var(--muted); font-size: 1.1rem; margin: 14px 0 26px; max-width: 46ch; animation: up .7s .2s both; }
 
-  /* LAYOUT */
-  main { max-width: 1120px; margin: 28px auto 72px; padding: 0 20px; display: grid; gap: 24px; align-items: start; }
-  @media (min-width: 960px) { main { grid-template-columns: 380px 1fr; } .formcard { position: sticky; top: 20px; } }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); animation: up .7s .5s both; }
-  .formcard { padding: 26px; }
-  .formcard h2, .rec-head h2 { font-size: 1.3rem; }
-  .sub { margin: 4px 0 20px; color: var(--muted); font-size: .95rem; }
-
-  /* FORM */
-  form { display: grid; gap: 16px; }
-  .field { display: grid; gap: 6px; position: relative; }
-  .field label { font-weight: 600; font-size: .95rem; transition: color .2s; }
-  .field:focus-within label { color: var(--brand); }
-  input, textarea, .search input {
-    font: inherit; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px; width: 100%;
+  /* CARD */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 26px; box-shadow: var(--shadow); max-width: 480px; animation: up .7s .3s both; }
+  form { display: grid; gap: 20px; }
+  label, .lbl { font-weight: 700; font-size: .98rem; display: block; margin-bottom: 7px; transition: color .2s; }
+  .field:focus-within > label { color: var(--plum); }
+  input[type=text] {
+    width: 100%; font: inherit; font-size: 1.05rem; color: var(--ink); background: var(--soft); border: 2px solid transparent; border-radius: 13px; padding: 14px 16px;
     transition: border-color .2s, box-shadow .2s, background .2s;
   }
-  textarea { min-height: 100px; resize: vertical; }
-  input::placeholder, textarea::placeholder { color: #8b9a92; }
-  input:focus, textarea:focus { outline: none; border-color: var(--brand); background: var(--surface); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 18%, transparent); }
-  .cnt { justify-self: end; font-size: .8rem; color: var(--muted); margin-top: -2px; }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px; font: 600 1.02rem "Source Sans 3", sans-serif;
-    background: var(--brand); color: var(--on-brand); border: 0; border-radius: 10px; padding: 13px 18px; cursor: pointer;
-    transition: transform .15s, box-shadow .2s, filter .2s; box-shadow: 0 6px 16px color-mix(in srgb, var(--brand) 35%, transparent);
+  input::placeholder { color: #9a8b9f; }
+  input:focus { outline: none; border-color: var(--plum); background: var(--surface); box-shadow: 0 0 0 5px color-mix(in srgb, var(--plum) 16%, transparent); }
+
+  .stepper { display: flex; align-items: center; background: var(--soft); border-radius: 13px; padding: 5px; border: 2px solid transparent; transition: border-color .2s, box-shadow .2s; }
+  .stepper:focus-within { border-color: var(--plum); box-shadow: 0 0 0 5px color-mix(in srgb, var(--plum) 16%, transparent); }
+  .stepper button { width: 46px; height: 46px; flex: none; border: 0; border-radius: 10px; background: var(--surface); color: var(--plum); font: 800 1.5rem "Gabarito", sans-serif; cursor: pointer; box-shadow: 0 1px 3px rgba(43,29,47,.15); transition: transform .12s, background .2s, color .2s; }
+  .stepper button:hover { background: var(--plum); color: var(--on-plum); }
+  .stepper button:active { transform: scale(.88); }
+  .stepper .val { flex: 1; display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+  .stepper input { width: 5.2ch; text-align: center; font: 800 1.9rem "Gabarito", sans-serif; background: transparent; border: 0; padding: 4px 0; box-shadow: none; -moz-appearance: textfield; }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .stepper input:focus { box-shadow: none; background: transparent; }
+  .stepper .val span { color: var(--muted); font-weight: 700; }
+  .bump { animation: bump .3s; }
+  @keyframes bump { 40% { transform: scale(1.25); color: var(--plum); } }
+
+  .chips { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .chip { font: 700 .95rem "Nunito Sans", sans-serif; padding: 7px 14px; border: 2px solid var(--line); border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer; transition: all .2s; }
+  .chip:hover { border-color: var(--plum); transform: translateY(-2px); }
+  .chip.on { background: var(--plum); color: var(--on-plum); border-color: var(--plum); }
+
+  .go {
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    font: 800 1.15rem "Gabarito", sans-serif; background: var(--plum); color: var(--on-plum); border: 0; border-radius: 14px; padding: 16px; cursor: pointer;
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--plum) 35%, transparent); transition: transform .15s, filter .2s;
   }
-  .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
-  .btn:active { transform: translateY(0) scale(.98); }
-  .btn:disabled { cursor: wait; filter: grayscale(.3) opacity(.8); transform: none; }
-  .btn:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .spin { width: 16px; height: 16px; border: 2.5px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: rot .7s linear infinite; display: none; }
-  .loading .spin { display: block; }
+  .go::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); transform: translateX(-120%); transition: transform .7s; }
+  .go:hover::after { transform: translateX(120%); }
+  .go:hover { transform: translateY(-2px); }
+  .go:active { transform: scale(.98); }
+  .go:disabled { cursor: wait; filter: opacity(.8); transform: none; }
+  .go:focus-visible, .stepper button:focus-visible, .chip:focus-visible, .again:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+  .spin { width: 18px; height: 18px; border: 3px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: rot .7s linear infinite; display: none; }
+  .busy .spin { display: block; }
   @keyframes rot { to { transform: rotate(360deg); } }
+  .err { margin: 0; min-height: 1.4em; color: var(--danger); font-weight: 700; font-size: .95rem; }
+  .err.show { animation: shake .4s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 
-  /* RECORDS */
-  .rec-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 22px 24px 14px; }
-  .search { position: relative; flex: 1 1 200px; max-width: 280px; }
-  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--muted); }
-  .search input { padding-left: 36px; }
-  .tablewrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; font-weight: 600; font-size: .88rem; color: var(--muted); padding: 10px 24px; background: var(--bg); border-block: 1px solid var(--line); }
-  td { padding: 15px 24px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  tbody tr { animation: row .5s both; animation-delay: calc(var(--i) * 45ms); transition: background .2s; }
-  tbody tr:hover { background: var(--soft); }
-  tbody tr.new { animation: row .5s both, flash 2.4s .3s; }
-  @keyframes row { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
-  @keyframes flash { 0%, 60% { background: color-mix(in srgb, var(--accent) 35%, transparent); } 100% { background: transparent; } }
-  .nm { font-weight: 600; display: flex; align-items: center; gap: 11px; white-space: nowrap; }
-  .av { width: 34px; height: 34px; border-radius: 50%; background: var(--soft); color: var(--brand); display: grid; place-items: center; font: 700 .95rem "Bricolage Grotesque", sans-serif; flex: none; transition: transform .3s, background .3s, color .3s; }
-  tr:hover .av { background: var(--brand); color: var(--on-brand); transform: scale(1.1); }
-  .msg { min-width: 180px; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .when { color: var(--muted); font-size: .9rem; white-space: nowrap; }
-  .tag { display: inline-block; background: var(--soft); color: var(--brand); border-radius: 999px; padding: 2px 11px; font-size: .9rem; font-weight: 600; }
-  .state { padding: 44px 24px; text-align: center; color: var(--muted); animation: up .5s both; }
-  .sk { height: 20px; margin: 22px 24px; border-radius: 6px; background: linear-gradient(100deg, var(--line) 30%, var(--soft) 50%, var(--line) 70%) 0 0 / 300% 100%; animation: shimmer 1.3s linear infinite; }
-  @keyframes shimmer { to { background-position: -300% 0; } }
+  /* SUCCESS */
+  .ok { display: none; text-align: center; padding: 10px 0; }
+  .done form { display: none; }
+  .done .ok { display: block; animation: pop .6s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes pop { from { opacity: 0; transform: scale(.85) translateY(16px); } to { opacity: 1; transform: none; } }
+  .ok svg { width: 84px; height: 84px; }
+  .ok circle { fill: none; stroke: var(--plum); stroke-width: 5; stroke-dasharray: 170; stroke-dashoffset: 170; animation: draw .7s .1s forwards; }
+  .ok path { fill: none; stroke: var(--plum); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 50; stroke-dashoffset: 50; animation: draw .5s .6s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .ok h2 { font-size: 1.6rem; margin: 10px 0 6px; }
+  .ok p { margin: 0 0 20px; color: var(--muted); }
+  .ok strong { color: var(--ink); }
+  .again { font: 700 1rem "Nunito Sans", sans-serif; background: transparent; color: var(--plum); border: 2px solid var(--plum); border-radius: 12px; padding: 11px 20px; cursor: pointer; transition: background .2s, color .2s; }
+  .again:hover { background: var(--plum); color: var(--on-plum); }
 
-  @media (max-width: 720px) {
-    thead { display: none; }
-    table, tbody, tr, td { display: block; width: 100%; }
-    tr { padding: 14px 20px; border-bottom: 1px solid var(--line); }
-    td { border: 0; padding: 3px 0; }
-    td[data-l]::before { content: attr(data-l) ": "; color: var(--muted); font-size: .88rem; }
-    .nm { margin-bottom: 6px; }
-  }
+  /* ART */
+  .art { position: relative; aspect-ratio: 1 / .92; max-width: 520px; width: 100%; margin-inline: auto; }
+  .art svg { width: 100%; height: 100%; overflow: visible; }
+  .m { transform-box: fill-box; transform-origin: 50% 100%; animation: grow .9s cubic-bezier(.2,1.4,.4,1) both, sway 6s 1.2s ease-in-out infinite alternate; }
+  .m1 { animation-delay: .35s, 1.4s; } .m2 { animation-delay: .55s, 2s; } .m3 { animation-delay: .75s, 2.6s; }
+  @keyframes grow { from { transform: scale(0); } to { transform: scale(1); } }
+  @keyframes sway { from { transform: rotate(-1.8deg); } to { transform: rotate(1.8deg); } }
+  .sp { position: absolute; border-radius: 50%; background: var(--amber); opacity: 0; animation: float 7s linear infinite; }
+  @keyframes float { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .7; } 100% { transform: translateY(-190px) translateX(24px); opacity: 0; } }
+  .stat { position: absolute; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 11px 17px; box-shadow: var(--shadow); animation: up .7s 1s both; }
+  .stat span { display: block; font-size: .85rem; color: var(--muted); line-height: 1.2; }
+  .stat b { font: 800 1.6rem/1.2 "Gabarito", sans-serif; }
+  .s1 { left: -4px; bottom: 6%; } .s2 { right: -4px; bottom: 22%; animation-delay: 1.15s; }
+  @media (max-width: 520px) { .s1 { left: 0; } .s2 { right: 0; } .stat b { font-size: 1.3rem; } }
 
-  /* TOAST */
-  .toast { position: fixed; right: 20px; bottom: 20px; z-index: 20; max-width: 320px; padding: 13px 18px; border-radius: 12px; background: var(--ink); color: var(--bg); font-weight: 600; box-shadow: 0 12px 32px rgba(0,0,0,.25); transform: translateY(30px); opacity: 0; pointer-events: none; transition: transform .4s cubic-bezier(.2,1.2,.4,1), opacity .3s; border-left: 5px solid var(--accent); }
-  .toast.show { transform: none; opacity: 1; }
-  .toast.err { border-left-color: var(--danger); }
-
-  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .ok circle, .ok path { stroke-dashoffset: 0 !important; } }
 </style>
 </head>
 <body>
-<div class="band">
-  <div class="wrap">
-    <nav>
-      <div class="logo">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e0a526"/><path d="M12 28c0-9 6-15 16-16 0 10-6 16-16 16z" fill="#0f3d28"/><path d="M12 28l9-9" stroke="#e0a526" stroke-width="2" stroke-linecap="round"/></svg>
-        GITHUBXAPP
-      </div>
-      <span class="pill" id="pill"><i class="dot"></i><span id="pillTxt">Kumokonekta…</span></span>
-    </nav>
-    <div class="hero">
-      <h1>Talaan ng mga entry, diretso sa Google Sheet</h1>
-      <p>Ilagay ang pangalan, address, at farm location. Mase-save ito agad at makikita ng lahat sa talaan.</p>
-    </div>
-  </div>
-</div>
+<div class="wrap">
+  <nav>
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e9a23b"/><path d="M8 22c0-8 5-13 12-13s12 5 12 13c-8 2-16 2-24 0z" fill="#5b2f5f"/><rect x="16" y="22" width="8" height="10" rx="4" fill="#fff"/></svg>
+    Mushroom Pre-Order
+  </nav>
 
-<div class="wrap" style="padding:0 20px">
-  <div class="stats">
-    <div class="stat"><span>Kabuuang entry</span><strong id="sTotal">0</strong></div>
-    <div class="stat"><span>Magkakaibang farm location</span><strong id="sFarms">0</strong></div>
-    <div class="stat"><span>Huling entry</span><strong id="sLast">-</strong></div>
-  </div>
-</div>
+  <section class="hero">
+    <div>
+      <h1>Magpa-reserve ng <em>sariwang mushroom</em></h1>
+      <p class="lead">Ilagay lang ang pangalan mo at kung ilang kilo ang gusto mo. Mare-record agad ang pre-order mo.</p>
 
-<main>
-  <section class="card formcard">
-    <h2>Bagong entry</h2>
-    <p class="sub">Lahat ng field ay kailangang punan.</p>
-    <form id="form">
-      <div class="field"><label for="pangalan">Pangalan</label><input id="pangalan" maxlength="80" required autocomplete="name" placeholder="Juan Dela Cruz"></div>
-      <div class="field"><label for="address">Address</label><input id="address" maxlength="150" required autocomplete="street-address" placeholder="Barangay, bayan, probinsya"></div>
-      <div class="field"><label for="farm">Farm Location</label><input id="farm" maxlength="150" required placeholder="Lokasyon ng sakahan"></div>
-      <div class="field"><label for="mensahe">Mensahe</label><textarea id="mensahe" maxlength="500" required placeholder="Isulat ang mensahe dito"></textarea><span class="cnt" id="cnt">0 / 500</span></div>
-      <button class="btn" id="send" type="submit"><i class="spin"></i><span id="btnTxt">I-save sa Sheet</span></button>
-    </form>
-  </section>
+      <div class="card" id="card">
+        <form id="form" novalidate>
+          <div class="field">
+            <label for="pangalan">Pangalan</label>
+            <input type="text" id="pangalan" maxlength="80" autocomplete="name" placeholder="Juan Dela Cruz" required>
+          </div>
+          <div class="field">
+            <span class="lbl" id="kl">Ilang kilo?</span>
+            <div class="stepper" role="group" aria-labelledby="kl">
+              <button type="button" id="minus" aria-label="Bawasan ng kalahating kilo">−</button>
+              <div class="val"><input type="number" id="kilo" min="0.5" max="500" step="0.5" value="1" inputmode="decimal" aria-labelledby="kl"><span>kilo</span></div>
+              <button type="button" id="plus" aria-label="Dagdagan ng kalahating kilo">+</button>
+            </div>
+            <div class="chips" id="chips"></div>
+          </div>
+          <p class="err" id="err" role="alert"></p>
+          <button class="go" id="go" type="submit"><i class="spin"></i><span id="goTxt">I-reserve ang order ko</span></button>
+        </form>
 
-  <section class="card">
-    <div class="rec-head">
-      <h2>Mga naka-save</h2>
-      <div class="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Maghanap" aria-label="Maghanap sa talaan">
+        <div class="ok" id="ok" aria-live="polite">
+          <svg viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="27"/><path d="M30 43l9 9 16-18"/></svg>
+          <h2 id="okH">Salamat!</h2>
+          <p id="okP"></p>
+          <button class="again" id="again" type="button">Mag-order ulit</button>
+        </div>
       </div>
     </div>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Pangalan</th><th>Address</th><th>Farm Location</th><th>Mensahe</th><th>Petsa</th></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
-      <div id="state"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+
+    <div class="art" aria-hidden="true">
+      <svg viewBox="0 0 420 380">
+        <ellipse cx="210" cy="338" rx="190" ry="26" fill="#5b2f5f" opacity=".14"/>
+        <g transform="translate(40 120) scale(.62)"><g class="m m2">
+          <rect x="170" y="190" width="60" height="150" rx="26" fill="var(--stem)"/>
+          <path d="M96 210C96 112 148 66 200 66s104 46 104 144q-104 28-208 0z" fill="var(--cap)"/>
+          <circle cx="160" cy="130" r="14" fill="#fff" opacity=".7"/><circle cx="232" cy="110" r="10" fill="#fff" opacity=".7"/><circle cx="252" cy="160" r="12" fill="#fff" opacity=".7"/>
+        </g></g>
+        <g transform="translate(250 90) scale(.72)"><g class="m m3">
+          <rect x="170" y="190" width="60" height="170" rx="26" fill="var(--stem)"/>
+          <path d="M96 210C96 112 148 66 200 66s104 46 104 144q-104 28-208 0z" fill="#b5835f"/>
+          <circle cx="150" cy="150" r="13" fill="#fff" opacity=".7"/><circle cx="220" cy="106" r="12" fill="#fff" opacity=".7"/><circle cx="256" cy="156" r="10" fill="#fff" opacity=".7"/>
+        </g></g>
+        <g transform="translate(90 20)"><g class="m m1">
+          <rect x="170" y="190" width="60" height="150" rx="26" fill="var(--stem)"/>
+          <path d="M80 214C80 100 140 50 200 50s120 50 120 164q-120 32-240 0z" fill="#6e3d6f"/>
+          <circle cx="146" cy="130" r="16" fill="#fff" opacity=".75"/><circle cx="224" cy="96" r="12" fill="#fff" opacity=".75"/><circle cx="262" cy="156" r="14" fill="#fff" opacity=".75"/><circle cx="196" cy="160" r="9" fill="#fff" opacity=".75"/>
+        </g></g>
+      </svg>
+      <i class="sp" style="left:22%;bottom:40%;width:8px;height:8px;animation-delay:0s"></i>
+      <i class="sp" style="left:48%;bottom:50%;width:6px;height:6px;animation-delay:1.8s"></i>
+      <i class="sp" style="left:70%;bottom:38%;width:9px;height:9px;animation-delay:3.2s"></i>
+      <i class="sp" style="left:36%;bottom:58%;width:5px;height:5px;animation-delay:4.6s"></i>
+      <i class="sp" style="left:82%;bottom:52%;width:7px;height:7px;animation-delay:2.4s"></i>
+      <div class="stat s1"><span>Nag-pre-order</span><b id="sOrders">-</b></div>
+      <div class="stat s2"><span>Kabuuang kilo</span><b id="sKilos">-</b></div>
     </div>
   </section>
-</main>
-
-<div class="toast" id="toast" role="status"></div>
+</div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbwDzUwfg9-E4MBGbfdiG-3mlHf8PdA254vtHk-6Watlt6M65y4-1IRfMuS2drV7PvKaPw/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwEyslb4CL9VNEOvNQSEiO6DNQje2JX_hWcJ2jZouZluXZ4PJII-Y0ZKY_-YH8O3Wiujw/exec';
 
   const $ = id => document.getElementById(id);
-  const form = $('form'), sendBtn = $('send'), rows = $('rows'), stateEl = $('state');
+  const kilo = $('kilo'), err = $('err'), go = $('go');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let entries = [], justAdded = false;
 
-  const setPill = (cls, txt) => { $('pill').className = 'pill ' + cls; $('pillTxt').textContent = txt; };
+  // Mga mabilisang pili
+  [1, 2, 5, 10].forEach(n => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = n + ' kilo';
+    b.onclick = () => setKilo(n); $('chips').appendChild(b);
+  });
 
-  function countUp(el, to) {
-    if (reduce || to === 0) { el.textContent = to; return; }
+  function setKilo(v) {
+    v = Math.min(500, Math.max(0.5, Math.round(v * 2) / 2));
+    kilo.value = v; syncChips();
+    kilo.classList.remove('bump'); void kilo.offsetWidth; kilo.classList.add('bump');
+  }
+  function syncChips() { [...$('chips').children].forEach((c, i) => c.classList.toggle('on', Number(kilo.value) === [1, 2, 5, 10][i])); }
+  $('minus').onclick = () => setKilo((Number(kilo.value) || 1) - 0.5);
+  $('plus').onclick = () => setKilo((Number(kilo.value) || 0) + 0.5);
+  kilo.addEventListener('input', syncChips);
+  syncChips();
+
+  function countUp(el, to, dec) {
+    const fmt = v => dec ? v.toFixed(1).replace(/\.0$/, '') : Math.round(v);
+    if (reduce || !to) { el.textContent = fmt(to || 0); return; }
     const t0 = performance.now();
     (function step(t) {
-      const p = Math.min((t - t0) / 700, 1);
-      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      const p = Math.min((t - t0) / 800, 1);
+      el.textContent = fmt(to * (1 - Math.pow(1 - p, 3)));
       if (p < 1) requestAnimationFrame(step);
     })(t0);
   }
 
-  function stats() {
-    countUp($('sTotal'), entries.length);
-    countUp($('sFarms'), new Set(entries.map(e => (e.farm || '').trim().toLowerCase()).filter(Boolean)).size);
-    $('sLast').textContent = entries.length ? new Date(entries[0].petsa).toLocaleDateString('fil-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : '-';
-  }
-
-  function cell(tr, label, node) {
-    const td = document.createElement('td'); if (label) td.dataset.l = label;
-    td.append(node); tr.appendChild(td); return td;
-  }
-
-  function render() {
-    const q = $('q').value.trim().toLowerCase();
-    const list = entries.filter(e => !q || [e.pangalan, e.address, e.farm, e.mensahe].join(' ').toLowerCase().includes(q));
-    rows.textContent = ''; stateEl.textContent = '';
-    if (!list.length) {
-      const d = document.createElement('div'); d.className = 'state';
-      d.textContent = entries.length ? 'Walang tumugma sa hinahanap mo.' : 'Wala pang entry. Ikaw ang una.';
-      stateEl.appendChild(d); return;
-    }
-    list.forEach((e, i) => {
-      const tr = document.createElement('tr'); tr.style.setProperty('--i', Math.min(i, 14));
-      if (justAdded && i === 0 && !q) tr.className = 'new';
-      const nm = document.createElement('div'); nm.className = 'nm';
-      const av = document.createElement('span'); av.className = 'av'; av.textContent = (e.pangalan || '?').trim().charAt(0).toUpperCase();
-      const nt = document.createElement('span'); nt.textContent = e.pangalan; nm.append(av, nt);
-      cell(tr, '', nm);
-      cell(tr, 'Address', document.createTextNode(e.address || '-'));
-      const farm = e.farm ? Object.assign(document.createElement('span'), { className: 'tag', textContent: e.farm }) : document.createTextNode('-');
-      cell(tr, 'Farm', farm);
-      const m = document.createElement('div'); m.className = 'msg'; m.textContent = e.mensahe; cell(tr, '', m);
-      const w = document.createElement('span'); w.className = 'when'; w.textContent = new Date(e.petsa).toLocaleString('fil-PH', { dateStyle: 'medium', timeStyle: 'short' }); cell(tr, '', w);
-      rows.appendChild(tr);
-    });
-    justAdded = false;
-  }
-
-  async function load() {
+  async function loadStats() {
     try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      entries = data.entries || [];
-      setPill('on', 'Konektado sa Google Sheets');
-      stats(); render();
-    } catch (err) {
-      setPill('off', 'Hindi konektado');
-      rows.textContent = ''; stateEl.innerHTML = '';
-      const d = document.createElement('div'); d.className = 'state'; d.textContent = 'Hindi ma-load ang data. Tingnan kung tama ang API_URL.'; stateEl.appendChild(d);
-    }
+      const d = await (await fetch(API_URL)).json();
+      countUp($('sOrders'), d.orders || 0, false);
+      countUp($('sKilos'), d.kilos || 0, true);
+    } catch (e) { /* hindi kritikal ang stats */ }
   }
 
-  let tt;
-  function toast(msg, err) {
-    const t = $('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
-    clearTimeout(tt); tt = setTimeout(() => t.className = 'toast', 3200);
+  function showErr(msg) {
+    err.textContent = msg; err.classList.remove('show'); void err.offsetWidth; err.classList.add('show');
   }
 
-  $('q').addEventListener('input', render);
-  $('mensahe').addEventListener('input', e => $('cnt').textContent = e.target.value.length + ' / 500');
-
-  form.addEventListener('submit', async ev => {
+  $('form').addEventListener('submit', async ev => {
     ev.preventDefault();
-    sendBtn.disabled = true; sendBtn.classList.add('loading'); $('btnTxt').textContent = 'Sine-save…';
+    const name = $('pangalan').value.trim(), k = Number(kilo.value);
+    err.textContent = '';
+    if (!name) { showErr('Ilagay ang pangalan mo.'); $('pangalan').focus(); return; }
+    if (!(k >= 0.5 && k <= 500)) { showErr('Ilagay ang kilo, mula 0.5 hanggang 500.'); kilo.focus(); return; }
+
+    go.disabled = true; go.classList.add('busy'); $('goTxt').textContent = 'Sine-save…';
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ pangalan: $('pangalan').value, address: $('address').value, farm: $('farm').value, mensahe: $('mensahe').value })
+        body: JSON.stringify({ pangalan: name, kilo: k })
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
-      form.reset(); $('cnt').textContent = '0 / 500';
-      toast('Na-save na sa Google Sheet.');
-      justAdded = true; $('q').value = ''; load();
-    } catch (err) {
-      toast('May error: ' + err.message, true);
+      $('okH').textContent = 'Salamat, ' + name.split(' ')[0] + '!';
+      $('okP').innerHTML = '';
+      $('okP').append('Na-reserve na ang ', Object.assign(document.createElement('strong'), { textContent: k + ' kilo' }), ' na mushroom para sa iyo.');
+      $('card').classList.add('done');
+      loadStats();
+    } catch (e) {
+      showErr('Hindi na-save: ' + e.message);
     } finally {
-      sendBtn.disabled = false; sendBtn.classList.remove('loading'); $('btnTxt').textContent = 'I-save sa Sheet';
+      go.disabled = false; go.classList.remove('busy'); $('goTxt').textContent = 'I-reserve ang order ko';
     }
   });
 
-  load();
+  $('again').onclick = () => {
+    $('card').classList.remove('done'); $('pangalan').value = ''; setKilo(1); $('pangalan').focus();
+  };
+
+  loadStats();
 </script>
 </body>
 </html>
