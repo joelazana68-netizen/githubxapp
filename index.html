@@ -6,234 +6,283 @@
 <title>GITHUBXAPP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root { --blue:#1633b8; --deep:#0e2290; --yellow:#ffd23f; --red:#ff3d57; --paper:#fffdf6; --ink:#0b1033; --mint:#7be0b0; --sky:#9fd0ff; }
+  :root {
+    --bg:#f3f6f4; --surface:#fff; --ink:#14201a; --muted:#5d6b63; --line:#dce4df; --soft:#e8f1ec;
+    --brand:#14573a; --on-brand:#fff; --accent:#e0a526; --band:#0f3d28; --danger:#b3261e; --ok:#14573a;
+    --shadow:0 1px 2px rgba(15,40,28,.06), 0 8px 24px rgba(15,40,28,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0d1410; --surface:#15201a; --ink:#e8efea; --muted:#9aaba1; --line:#26352c; --soft:#1b2a21;
+      --brand:#58c28d; --on-brand:#08140d; --accent:#f0b93a; --band:#0a2418; --danger:#ff8a80; --ok:#58c28d; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); }
+  }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; color: var(--ink); font: 400 16px/1.5 "DM Sans", system-ui, sans-serif;
-    background: repeating-linear-gradient(135deg, var(--blue) 0 28px, var(--deep) 28px 56px);
-    background-size: 200% 200%; animation: drift 24s linear infinite; min-height: 100vh; overflow-x: hidden;
-  }
-  @keyframes drift { to { background-position: 112px 112px; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 "Source Sans 3", system-ui, sans-serif; }
+  h1, h2, h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; margin: 0; letter-spacing: -.01em; }
 
-  /* HERO */
-  header { padding: 56px 20px 28px; text-align: center; }
-  h1 { margin: 0; font: 400 clamp(2.4rem, 10vw, 6rem)/1 "Bowlby One", Impact, sans-serif; color: var(--paper); letter-spacing: .01em; }
-  h1 span {
-    display: inline-block; text-shadow: 4px 4px 0 var(--ink), 8px 8px 0 var(--red);
-    animation: drop .9s cubic-bezier(.2,1.4,.4,1) both; animation-delay: calc(var(--i) * 70ms);
-    transition: transform .25s;
+  /* BAND */
+  .band {
+    background: var(--band); color: #fff; padding: 0 20px 96px; position: relative; overflow: hidden;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 2px, transparent 2px 26px);
   }
-  h1 span:hover { transform: translateY(-10px) rotate(-6deg) scale(1.12); color: var(--yellow); }
-  @keyframes drop {
-    from { opacity: 0; transform: translateY(-140%) rotate(-18deg) scale(.6); }
-    to { opacity: 1; transform: none; }
-  }
-  .tag { margin: 18px auto 0; color: var(--paper); font-weight: 700; max-width: 34ch; animation: fade .8s .9s both; }
-  @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .band::after { content: ""; position: absolute; right: -80px; top: -120px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(224,165,38,.28), transparent 65%); animation: glow 7s ease-in-out infinite alternate; }
+  @keyframes glow { to { transform: translate(-40px, 30px) scale(1.15); } }
+  .wrap { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; animation: down .6s both; }
+  .logo { display: flex; align-items: center; gap: 10px; font: 700 1.15rem "Bricolage Grotesque", sans-serif; }
+  .logo svg { width: 34px; height: 34px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; padding: 6px 14px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(255,255,255,.07); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #b8c4bd; }
+  .pill.on .dot { background: #5fe3a1; box-shadow: 0 0 0 0 rgba(95,227,161,.7); animation: ping 2s infinite; }
+  .pill.off .dot { background: #ff8a80; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 9px rgba(95,227,161,0); } 100% { box-shadow: 0 0 0 0 rgba(95,227,161,0); } }
+  @keyframes down { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+  .hero { padding-top: 34px; max-width: 640px; animation: up .7s .1s both; }
+  .hero h1 { font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.08; font-weight: 700; }
+  .hero p { margin: 14px 0 0; color: #cfe0d6; font-size: 1.1rem; }
+  @keyframes up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
-  /* RIBBON */
-  .ribbon { background: var(--yellow); border-block: 4px solid var(--ink); transform: rotate(-1.6deg) scale(1.04); margin: 12px 0 36px; overflow: hidden; white-space: nowrap; }
-  .ribbon div { display: inline-block; padding: 9px 0; font: 400 1.05rem "Bowlby One", Impact, sans-serif; animation: run 22s linear infinite; }
-  .ribbon b { margin: 0 22px; color: var(--red); }
-  @keyframes run { to { transform: translateX(-50%); } }
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: -58px; position: relative; z-index: 2; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow); animation: up .6s both; transition: transform .25s, box-shadow .25s; }
+  .stat:nth-child(1) { animation-delay: .25s; } .stat:nth-child(2) { animation-delay: .35s; } .stat:nth-child(3) { animation-delay: .45s; }
+  .stat:hover { transform: translateY(-4px); }
+  .stat span { color: var(--muted); font-size: .92rem; }
+  .stat strong { display: block; font: 700 2rem/1.15 "Bricolage Grotesque", sans-serif; margin-top: 2px; }
+  .stat:nth-child(1) { border-top: 4px solid var(--brand); } .stat:nth-child(2) { border-top: 4px solid var(--accent); } .stat:nth-child(3) { border-top: 4px solid var(--muted); }
 
   /* LAYOUT */
-  main { max-width: 1040px; margin: 0 auto; padding: 0 20px 72px; display: grid; gap: 36px; align-items: start; }
-  @media (min-width: 900px) { main { grid-template-columns: 380px 1fr; } .formcard { position: sticky; top: 24px; } }
+  main { max-width: 1120px; margin: 28px auto 72px; padding: 0 20px; display: grid; gap: 24px; align-items: start; }
+  @media (min-width: 960px) { main { grid-template-columns: 380px 1fr; } .formcard { position: sticky; top: 20px; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); animation: up .7s .5s both; }
+  .formcard { padding: 26px; }
+  .formcard h2, .rec-head h2 { font-size: 1.3rem; }
+  .sub { margin: 4px 0 20px; color: var(--muted); font-size: .95rem; }
 
   /* FORM */
-  .formcard {
-    background: var(--paper); border: 4px solid var(--ink); border-radius: 18px; padding: 24px;
-    box-shadow: 10px 10px 0 var(--yellow), 10px 10px 0 4px var(--ink);
-    animation: rise .8s .5s cubic-bezier(.2,1.2,.4,1) both;
-  }
-  @keyframes rise { from { opacity: 0; transform: translateY(60px) rotate(2deg); } to { opacity: 1; transform: none; } }
-  .formcard h2 { margin: 0 0 16px; font: 400 1.5rem "Bowlby One", Impact, sans-serif; }
   form { display: grid; gap: 16px; }
-  label { font-weight: 700; display: grid; gap: 6px; }
-  input, textarea {
-    font: inherit; color: var(--ink); background: #fff; border: 3px solid var(--ink); border-radius: 10px; padding: 11px 12px;
-    transition: transform .18s, box-shadow .18s, background .18s;
+  .field { display: grid; gap: 6px; position: relative; }
+  .field label { font-weight: 600; font-size: .95rem; transition: color .2s; }
+  .field:focus-within label { color: var(--brand); }
+  input, textarea, .search input {
+    font: inherit; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px; width: 100%;
+    transition: border-color .2s, box-shadow .2s, background .2s;
   }
-  textarea { min-height: 104px; resize: vertical; }
-  input:focus, textarea:focus { outline: none; transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--red); background: #fffbe8; }
-  button {
-    position: relative; overflow: hidden; font: 400 1.15rem "Bowlby One", Impact, sans-serif; color: var(--ink);
-    background: var(--yellow); border: 3px solid var(--ink); border-radius: 12px; padding: 14px 18px; cursor: pointer;
-    box-shadow: 6px 6px 0 var(--ink); transition: transform .12s, box-shadow .12s;
+  textarea { min-height: 100px; resize: vertical; }
+  input::placeholder, textarea::placeholder { color: #8b9a92; }
+  input:focus, textarea:focus { outline: none; border-color: var(--brand); background: var(--surface); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 18%, transparent); }
+  .cnt { justify-self: end; font-size: .8rem; color: var(--muted); margin-top: -2px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; font: 600 1.02rem "Source Sans 3", sans-serif;
+    background: var(--brand); color: var(--on-brand); border: 0; border-radius: 10px; padding: 13px 18px; cursor: pointer;
+    transition: transform .15s, box-shadow .2s, filter .2s; box-shadow: 0 6px 16px color-mix(in srgb, var(--brand) 35%, transparent);
   }
-  button::after {
-    content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.75) 50%, transparent 70%);
-    transform: translateX(-120%); transition: transform .6s;
-  }
-  button:hover::after { transform: translateX(120%); }
-  button:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
-  button:active { transform: translate(5px, 5px); box-shadow: 1px 1px 0 var(--ink); }
-  button:disabled { cursor: wait; background: var(--sky); }
-  button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px dashed var(--red); outline-offset: 3px; }
-  #status { margin: 0; min-height: 1.5em; font-weight: 700; }
-  #status.ok { color: #0a7a4a; animation: bounce .5s; }
-  #status.err { color: #c4132d; animation: shake .4s; }
-  @keyframes bounce { 0% { transform: scale(.7); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
-  @keyframes shake { 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .btn:disabled { cursor: wait; filter: grayscale(.3) opacity(.8); transform: none; }
+  .btn:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .spin { width: 16px; height: 16px; border: 2.5px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: rot .7s linear infinite; display: none; }
+  .loading .spin { display: block; }
+  @keyframes rot { to { transform: rotate(360deg); } }
 
-  /* WALL */
-  .wallhead { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; color: var(--paper); }
-  .wallhead h2 { margin: 0; font: 400 1.7rem "Bowlby One", Impact, sans-serif; text-shadow: 3px 3px 0 var(--ink); }
-  .count { background: var(--red); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 2px 12px; font-weight: 700; }
-  #list { display: grid; gap: 22px; }
-  .entry {
-    --r: -1.2deg; position: relative; display: grid; grid-template-columns: 48px 1fr; gap: 14px; padding: 18px;
-    background: var(--paper); border: 4px solid var(--ink); border-radius: 14px; box-shadow: 7px 7px 0 var(--ink);
-    transform: rotate(var(--r)); animation: pop .7s cubic-bezier(.2,1.3,.4,1) both; animation-delay: calc(var(--i) * 80ms);
-    transition: transform .25s cubic-bezier(.2,1.5,.4,1), box-shadow .25s;
-  }
-  .entry:nth-child(even) { --r: 1deg; }
-  .entry:nth-child(3n) { --r: .4deg; }
-  .entry:hover { transform: rotate(0) translateY(-6px) scale(1.02); box-shadow: 12px 12px 0 var(--ink); }
-  @keyframes pop { from { opacity: 0; transform: translateY(50px) rotate(calc(var(--r) * 6)) scale(.85); } to { opacity: 1; transform: rotate(var(--r)); } }
-  .av { width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--ink); display: grid; place-items: center; font: 400 1.25rem "Bowlby One", Impact, sans-serif; background: var(--yellow); transition: transform .4s; }
-  .entry:hover .av { transform: rotate(360deg); }
-  .entry:nth-child(4n+2) .av { background: var(--mint); }
-  .entry:nth-child(4n+3) .av { background: var(--sky); }
-  .entry:nth-child(4n) .av { background: var(--red); color: #fff; }
-  .msg { margin: 0 0 8px; font-size: 1.1rem; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .who { font-weight: 700; }
-  .meta { font-size: .85rem; color: #4a5078; display: flex; flex-wrap: wrap; gap: 4px 12px; }
-  .meta svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 3px; }
-  .empty { background: var(--paper); border: 4px dashed var(--ink); border-radius: 14px; padding: 28px; text-align: center; font-weight: 700; animation: pop .6s both; }
-  .sk { height: 104px; border: 4px solid var(--ink); border-radius: 14px; background: linear-gradient(100deg, #e9e6d6 30%, #fffdf6 50%, #e9e6d6 70%) 0 0 / 300% 100%; animation: shimmer 1.2s linear infinite; }
+  /* RECORDS */
+  .rec-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 22px 24px 14px; }
+  .search { position: relative; flex: 1 1 200px; max-width: 280px; }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--muted); }
+  .search input { padding-left: 36px; }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-weight: 600; font-size: .88rem; color: var(--muted); padding: 10px 24px; background: var(--bg); border-block: 1px solid var(--line); }
+  td { padding: 15px 24px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr { animation: row .5s both; animation-delay: calc(var(--i) * 45ms); transition: background .2s; }
+  tbody tr:hover { background: var(--soft); }
+  tbody tr.new { animation: row .5s both, flash 2.4s .3s; }
+  @keyframes row { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+  @keyframes flash { 0%, 60% { background: color-mix(in srgb, var(--accent) 35%, transparent); } 100% { background: transparent; } }
+  .nm { font-weight: 600; display: flex; align-items: center; gap: 11px; white-space: nowrap; }
+  .av { width: 34px; height: 34px; border-radius: 50%; background: var(--soft); color: var(--brand); display: grid; place-items: center; font: 700 .95rem "Bricolage Grotesque", sans-serif; flex: none; transition: transform .3s, background .3s, color .3s; }
+  tr:hover .av { background: var(--brand); color: var(--on-brand); transform: scale(1.1); }
+  .msg { min-width: 180px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .when { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+  .tag { display: inline-block; background: var(--soft); color: var(--brand); border-radius: 999px; padding: 2px 11px; font-size: .9rem; font-weight: 600; }
+  .state { padding: 44px 24px; text-align: center; color: var(--muted); animation: up .5s both; }
+  .sk { height: 20px; margin: 22px 24px; border-radius: 6px; background: linear-gradient(100deg, var(--line) 30%, var(--soft) 50%, var(--line) 70%) 0 0 / 300% 100%; animation: shimmer 1.3s linear infinite; }
   @keyframes shimmer { to { background-position: -300% 0; } }
 
-  /* CONFETTI */
-  .bit { position: fixed; z-index: 50; width: 10px; height: 14px; border: 2px solid var(--ink); pointer-events: none; animation: burst 1.1s cubic-bezier(.1,.8,.3,1) forwards; }
-  @keyframes burst { to { transform: translate(var(--x), var(--y)) rotate(var(--rot)); opacity: 0; } }
+  @media (max-width: 720px) {
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tr { padding: 14px 20px; border-bottom: 1px solid var(--line); }
+    td { border: 0; padding: 3px 0; }
+    td[data-l]::before { content: attr(data-l) ": "; color: var(--muted); font-size: .88rem; }
+    .nm { margin-bottom: 6px; }
+  }
+
+  /* TOAST */
+  .toast { position: fixed; right: 20px; bottom: 20px; z-index: 20; max-width: 320px; padding: 13px 18px; border-radius: 12px; background: var(--ink); color: var(--bg); font-weight: 600; box-shadow: 0 12px 32px rgba(0,0,0,.25); transform: translateY(30px); opacity: 0; pointer-events: none; transition: transform .4s cubic-bezier(.2,1.2,.4,1), opacity .3s; border-left: 5px solid var(--accent); }
+  .toast.show { transform: none; opacity: 1; }
+  .toast.err { border-left-color: var(--danger); }
 
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
-<header>
-  <h1 id="title" aria-label="GITHUBXAPP"></h1>
-  <p class="tag">Mag-iwan ng mensahe. Diretso itong mase-save sa Google Sheet.</p>
-</header>
+<div class="band">
+  <div class="wrap">
+    <nav>
+      <div class="logo">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e0a526"/><path d="M12 28c0-9 6-15 16-16 0 10-6 16-16 16z" fill="#0f3d28"/><path d="M12 28l9-9" stroke="#e0a526" stroke-width="2" stroke-linecap="round"/></svg>
+        GITHUBXAPP
+      </div>
+      <span class="pill" id="pill"><i class="dot"></i><span id="pillTxt">Kumokonekta…</span></span>
+    </nav>
+    <div class="hero">
+      <h1>Talaan ng mga entry, diretso sa Google Sheet</h1>
+      <p>Ilagay ang pangalan, address, at farm location. Mase-save ito agad at makikita ng lahat sa talaan.</p>
+    </div>
+  </div>
+</div>
 
-<div class="ribbon" aria-hidden="true">
-  <div id="run"></div>
+<div class="wrap" style="padding:0 20px">
+  <div class="stats">
+    <div class="stat"><span>Kabuuang entry</span><strong id="sTotal">0</strong></div>
+    <div class="stat"><span>Magkakaibang farm location</span><strong id="sFarms">0</strong></div>
+    <div class="stat"><span>Huling entry</span><strong id="sLast">-</strong></div>
+  </div>
 </div>
 
 <main>
-  <section class="formcard">
-    <h2>Isulat mo dito</h2>
+  <section class="card formcard">
+    <h2>Bagong entry</h2>
+    <p class="sub">Lahat ng field ay kailangang punan.</p>
     <form id="form">
-      <label>Pangalan <input id="pangalan" maxlength="80" required autocomplete="name"></label>
-      <label>Address <input id="address" maxlength="150" required autocomplete="street-address"></label>
-      <label>Farm Location <input id="farm" maxlength="150" required></label>
-      <label>Mensahe <textarea id="mensahe" maxlength="500" required></textarea></label>
-      <button id="send" type="submit">I-save sa Sheet</button>
-      <p id="status" role="status"></p>
+      <div class="field"><label for="pangalan">Pangalan</label><input id="pangalan" maxlength="80" required autocomplete="name" placeholder="Juan Dela Cruz"></div>
+      <div class="field"><label for="address">Address</label><input id="address" maxlength="150" required autocomplete="street-address" placeholder="Barangay, bayan, probinsya"></div>
+      <div class="field"><label for="farm">Farm Location</label><input id="farm" maxlength="150" required placeholder="Lokasyon ng sakahan"></div>
+      <div class="field"><label for="mensahe">Mensahe</label><textarea id="mensahe" maxlength="500" required placeholder="Isulat ang mensahe dito"></textarea><span class="cnt" id="cnt">0 / 500</span></div>
+      <button class="btn" id="send" type="submit"><i class="spin"></i><span id="btnTxt">I-save sa Sheet</span></button>
     </form>
   </section>
 
-  <section>
-    <div class="wallhead"><h2>Pader ng mensahe</h2><span class="count" id="count">0</span></div>
-    <div id="list"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+  <section class="card">
+    <div class="rec-head">
+      <h2>Mga naka-save</h2>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Maghanap" aria-label="Maghanap sa talaan">
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Pangalan</th><th>Address</th><th>Farm Location</th><th>Mensahe</th><th>Petsa</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="state"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+    </div>
   </section>
 </main>
+
+<div class="toast" id="toast" role="status"></div>
 
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbwDzUwfg9-E4MBGbfdiG-3mlHf8PdA254vtHk-6Watlt6M65y4-1IRfMuS2drV7PvKaPw/exec';
 
-  const form = document.getElementById('form');
-  const statusEl = document.getElementById('status');
-  const list = document.getElementById('list');
-  const sendBtn = document.getElementById('send');
-  const countEl = document.getElementById('count');
+  const $ = id => document.getElementById(id);
+  const form = $('form'), sendBtn = $('send'), rows = $('rows'), stateEl = $('state');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let entries = [], justAdded = false;
 
-  // Title letters + ribbon
-  const t = document.getElementById('title');
-  'GITHUBXAPP'.split('').forEach((ch, i) => {
-    const s = document.createElement('span'); s.textContent = ch; s.style.setProperty('--i', i); s.setAttribute('aria-hidden', 'true'); t.appendChild(s);
-  });
-  const phrase = ['MAG-IWAN NG MENSAHE', 'NASA SHEET LAHAT', 'LIBRE AT MABILIS'];
-  const run = document.getElementById('run');
-  const chunk = phrase.map(p => p + '<b>✦</b>').join('');
-  run.innerHTML = chunk.repeat(4);
+  const setPill = (cls, txt) => { $('pill').className = 'pill ' + cls; $('pillTxt').textContent = txt; };
 
-  const PIN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>';
+  function countUp(el, to) {
+    if (reduce || to === 0) { el.textContent = to; return; }
+    const t0 = performance.now();
+    (function step(t) {
+      const p = Math.min((t - t0) / 700, 1);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
 
-  function render(entries) {
-    list.textContent = '';
-    countEl.textContent = entries.length;
-    if (!entries.length) {
-      const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'Wala pang laman. Ikaw ang una!'; list.appendChild(d); return;
+  function stats() {
+    countUp($('sTotal'), entries.length);
+    countUp($('sFarms'), new Set(entries.map(e => (e.farm || '').trim().toLowerCase()).filter(Boolean)).size);
+    $('sLast').textContent = entries.length ? new Date(entries[0].petsa).toLocaleDateString('fil-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : '-';
+  }
+
+  function cell(tr, label, node) {
+    const td = document.createElement('td'); if (label) td.dataset.l = label;
+    td.append(node); tr.appendChild(td); return td;
+  }
+
+  function render() {
+    const q = $('q').value.trim().toLowerCase();
+    const list = entries.filter(e => !q || [e.pangalan, e.address, e.farm, e.mensahe].join(' ').toLowerCase().includes(q));
+    rows.textContent = ''; stateEl.textContent = '';
+    if (!list.length) {
+      const d = document.createElement('div'); d.className = 'state';
+      d.textContent = entries.length ? 'Walang tumugma sa hinahanap mo.' : 'Wala pang entry. Ikaw ang una.';
+      stateEl.appendChild(d); return;
     }
-    entries.forEach((e, i) => {
-      const card = document.createElement('article'); card.className = 'entry'; card.style.setProperty('--i', Math.min(i, 12));
-      const av = document.createElement('div'); av.className = 'av'; av.textContent = (e.pangalan || '?').trim().charAt(0).toUpperCase();
-      const body = document.createElement('div');
-      const p = document.createElement('p'); p.className = 'msg'; p.textContent = e.mensahe;
-      const meta = document.createElement('div'); meta.className = 'meta';
-      const who = document.createElement('span'); who.className = 'who'; who.textContent = e.pangalan;
-      meta.appendChild(who);
-      if (e.address) { const a = document.createElement('span'); a.innerHTML = PIN; a.append(e.address); meta.appendChild(a); }
-      if (e.farm) { const f = document.createElement('span'); f.textContent = '🌾 Farm: ' + e.farm; meta.appendChild(f); }
-      const d = document.createElement('span'); d.textContent = new Date(e.petsa).toLocaleString('fil-PH'); meta.appendChild(d);
-      body.append(p, meta); card.append(av, body); list.appendChild(card);
+    list.forEach((e, i) => {
+      const tr = document.createElement('tr'); tr.style.setProperty('--i', Math.min(i, 14));
+      if (justAdded && i === 0 && !q) tr.className = 'new';
+      const nm = document.createElement('div'); nm.className = 'nm';
+      const av = document.createElement('span'); av.className = 'av'; av.textContent = (e.pangalan || '?').trim().charAt(0).toUpperCase();
+      const nt = document.createElement('span'); nt.textContent = e.pangalan; nm.append(av, nt);
+      cell(tr, '', nm);
+      cell(tr, 'Address', document.createTextNode(e.address || '-'));
+      const farm = e.farm ? Object.assign(document.createElement('span'), { className: 'tag', textContent: e.farm }) : document.createTextNode('-');
+      cell(tr, 'Farm', farm);
+      const m = document.createElement('div'); m.className = 'msg'; m.textContent = e.mensahe; cell(tr, '', m);
+      const w = document.createElement('span'); w.className = 'when'; w.textContent = new Date(e.petsa).toLocaleString('fil-PH', { dateStyle: 'medium', timeStyle: 'short' }); cell(tr, '', w);
+      rows.appendChild(tr);
     });
+    justAdded = false;
   }
 
   async function load() {
     try {
       const res = await fetch(API_URL);
       const data = await res.json();
-      render(data.entries || []);
+      entries = data.entries || [];
+      setPill('on', 'Konektado sa Google Sheets');
+      stats(); render();
     } catch (err) {
-      list.innerHTML = '';
-      const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'Hindi ma-load. Tingnan kung tama ang API_URL.'; list.appendChild(d);
+      setPill('off', 'Hindi konektado');
+      rows.textContent = ''; stateEl.innerHTML = '';
+      const d = document.createElement('div'); d.className = 'state'; d.textContent = 'Hindi ma-load ang data. Tingnan kung tama ang API_URL.'; stateEl.appendChild(d);
     }
   }
 
-  function confetti(x, y) {
-    const colors = ['#ffd23f', '#ff3d57', '#7be0b0', '#9fd0ff', '#fffdf6'];
-    for (let i = 0; i < 34; i++) {
-      const b = document.createElement('i'); b.className = 'bit';
-      const ang = Math.random() * Math.PI * 2, dist = 90 + Math.random() * 190;
-      b.style.left = x + 'px'; b.style.top = y + 'px'; b.style.background = colors[i % colors.length];
-      b.style.setProperty('--x', Math.cos(ang) * dist + 'px'); b.style.setProperty('--y', Math.sin(ang) * dist + 80 + 'px');
-      b.style.setProperty('--rot', Math.random() * 720 - 360 + 'deg');
-      document.body.appendChild(b); setTimeout(() => b.remove(), 1200);
-    }
+  let tt;
+  function toast(msg, err) {
+    const t = $('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
+    clearTimeout(tt); tt = setTimeout(() => t.className = 'toast', 3200);
   }
 
-  form.addEventListener('submit', async (ev) => {
+  $('q').addEventListener('input', render);
+  $('mensahe').addEventListener('input', e => $('cnt').textContent = e.target.value.length + ' / 500');
+
+  form.addEventListener('submit', async ev => {
     ev.preventDefault();
-    sendBtn.disabled = true; statusEl.className = ''; statusEl.textContent = 'Sine-save…';
+    sendBtn.disabled = true; sendBtn.classList.add('loading'); $('btnTxt').textContent = 'Sine-save…';
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          pangalan: document.getElementById('pangalan').value,
-          address: document.getElementById('address').value,
-          farm: document.getElementById('farm').value,
-          mensahe: document.getElementById('mensahe').value
-        })
+        body: JSON.stringify({ pangalan: $('pangalan').value, address: $('address').value, farm: $('farm').value, mensahe: $('mensahe').value })
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
-      const r = sendBtn.getBoundingClientRect();
-      confetti(r.left + r.width / 2, r.top + r.height / 2);
-      form.reset();
-      statusEl.className = 'ok'; statusEl.textContent = 'Na-save na!';
-      load();
+      form.reset(); $('cnt').textContent = '0 / 500';
+      toast('Na-save na sa Google Sheet.');
+      justAdded = true; $('q').value = ''; load();
     } catch (err) {
-      statusEl.className = 'err'; statusEl.textContent = 'May error: ' + err.message;
+      toast('May error: ' + err.message, true);
     } finally {
-      sendBtn.disabled = false;
+      sendBtn.disabled = false; sendBtn.classList.remove('loading'); $('btnTxt').textContent = 'I-save sa Sheet';
     }
   });
 
