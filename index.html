@@ -201,6 +201,19 @@
   .bubble.sell .tq { display: block; font: 800 .75rem "Gabarito", sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); margin-bottom: 3px; }
   .bubble.sell .opts button { text-align: left; }
 
+  /* Sayaw ni Moki (gantimpala pagkatapos mag-order) */
+  #moki.dance .squish { animation: groove .6s ease-in-out infinite; }
+  #moki.dance .footL { animation: step .3s ease-in-out infinite; }
+  #moki.dance .footR { animation: step .3s -.15s ease-in-out infinite; }
+  #moki.dance .armR { animation: armUp .3s ease-in-out infinite alternate; }
+  #moki.dance .armL { animation: armUpL .3s -.15s ease-in-out infinite alternate; }
+  #moki.dance .sprout { animation: sprout .3s ease-in-out infinite alternate; }
+  @keyframes groove { 0% { transform: rotate(-9deg) translate(-10px, 0); } 25% { transform: rotate(0) translate(0, -16px) scale(.96, 1.06); } 50% { transform: rotate(9deg) translate(10px, 0); } 75% { transform: rotate(0) translate(0, -16px) scale(.96, 1.06); } 100% { transform: rotate(-9deg) translate(-10px, 0); } }
+  .note { position: fixed; z-index: 55; pointer-events: none; font: 800 1.6rem "Gabarito", sans-serif; color: var(--plum); animation: noteUp 1.8s ease-out forwards; }
+  @keyframes noteUp { from { opacity: 0; transform: translateY(0) rotate(-10deg); } 15% { opacity: 1; } to { opacity: 0; transform: translateY(-90px) rotate(14deg); } }
+  .confetti { position: fixed; top: -14px; z-index: 55; width: 10px; height: 14px; border-radius: 2px; pointer-events: none; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(105vh) rotate(720deg); } }
+
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .ok circle, .ok path { stroke-dashoffset: 0 !important; } }
 </style>
 </head>
@@ -440,6 +453,32 @@
   function cheer(first) {
     say('Salamat, ' + first + '! Yehey!'); joy('happy', 2600);
     [0, 650, 1300].forEach(d => setTimeout(() => hop(700), d));
+    setTimeout(() => dance(first), 2000);
+  }
+  // Sayaw bilang gantimpala sa bumili
+  let danceT;
+  function confetti() {
+    if (reduce) return;
+    const cols = ['#5b2f5f', '#e9a23b', '#ff8fab', '#4f9a5a', '#7fc8ff'];
+    for (let i = 0; i < 36; i++) {
+      const c = document.createElement('i'); c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw'; c.style.background = cols[i % cols.length];
+      c.style.animationDuration = 2.4 + Math.random() * 2 + 's'; c.style.animationDelay = Math.random() * .8 + 's';
+      document.body.appendChild(c); setTimeout(() => c.remove(), 5600);
+    }
+  }
+  function dance(first) {
+    if (!M.on || M.mode === 'held') return;
+    if (M.mode !== 'ground') { setTimeout(() => dance(first), 300); return; }
+    clearTimeout(danceT); M.tx = null; M.idle = -1e9; confetti();
+    joy('happy', 6500); moki.classList.add('dance');
+    say('Sayaw tayo, ' + first + '! Salamat sa order mo!');
+    const iv = setInterval(() => {
+      const n = document.createElement('b'); n.className = 'note'; n.textContent = ['♪', '♫'][Math.random() * 2 | 0];
+      n.style.left = (M.x - 30 + Math.random() * 60) + 'px'; n.style.top = (M.y - H) + 'px';
+      document.body.appendChild(n); setTimeout(() => n.remove(), 1900);
+    }, 380);
+    danceT = setTimeout(() => { clearInterval(iv); moki.classList.remove('dance'); M.idle = 0; say('Hay, napagod ako! Bumalik ka ulit, ha!'); }, 6500);
   }
 
   // Mga tuntungan: itaas ng form, heading, stats at hardin
@@ -558,7 +597,7 @@
     say(pokes[pi % pokes.length]);
   }
   moki.addEventListener('pointerdown', e => {
-    e.preventDefault();
+    e.preventDefault(); moki.classList.remove('dance');
     drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, t0: performance.now(), moved: false, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vy: 0 };
     moki.setPointerCapture(e.pointerId);
   });
