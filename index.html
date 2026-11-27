@@ -180,7 +180,7 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
 <section id="rate"><div class="sec"><h2>Rating ng mga customer</h2><p id="avg">Natanggap mo na ang order? I-rate kami.</p></div>
   <div class="cards" id="revs"></div>
   <form class="card" id="rf">
-    <div class="trow f"><div><label for="rid">Order ID</label><input id="rid" required></div><div><label for="rcp">CP number</label><input id="rcp" inputmode="tel" required></div></div>
+    <div class="f"><label for="rn">Unang pangalan</label><input id="rn" maxlength="40" required></div>
     <div class="f"><label for="rs">Rating</label><select id="rs" required><option value="">Pumili</option><option value="5">★★★★★ Napakaganda</option><option value="4">★★★★ Maganda</option><option value="3">★★★ Okay</option><option value="2">★★ Kulang</option><option value="1">★ Hindi maganda</option></select></div>
     <div class="f"><label for="rc">Komento</label><textarea id="rc" maxlength="500"></textarea></div>
     <div class="f"><label for="rp">Picture ng natanggap na produkto (opsyonal)</label><input id="rp" type="file" accept="image/*"></div>
@@ -201,7 +201,7 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
 <footer>Mga tanong? I-message kami. Salamat sa pagsuporta sa lokal na mushroom.</footer>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbw3TlslAhklhekHzfi7_pXxbv7NEU0XaiGfoN7Nx_mMSnD8pVo0AnPnXka22H2DsUjZ7A/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbyjrvkYFEVS3l1q_lpmkf13JfzqweqiDO9kGiXks7d65Ef0ZkoEgnlKwf_vK_87jq9Jrg/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -340,7 +340,7 @@ $('rf').addEventListener('submit', async ev => {
   ev.preventDefault(); const m = $('rerr'); m.textContent = 'Ipinapadala…'; $('rgo').disabled = true;
   try {
     const file = $('rp').files[0];
-    const d = { action: 'review', id: $('rid').value, cp: $('rcp').value, stars: Number($('rs').value), text: $('rc').value, consent: $('ro').checked, photo: file ? await shrink(file) : '' };
+    const d = { action: 'review', name: $('rn').value, stars: Number($('rs').value), text: $('rc').value, consent: $('ro').checked, photo: file ? await shrink(file) : '' };
     const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
     if (!r.ok || !r.saved) throw new Error(r.error || 'Hindi pa naka-update ang system.');
     $('rf').reset(); m.textContent = 'Salamat po! Natanggap na ang rating ninyo.';
