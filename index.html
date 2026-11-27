@@ -84,6 +84,7 @@ footer{padding:36px 0 90px;color:var(--mute);font-size:.9rem;text-align:center}
 select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:#f7faf8;color:var(--ink)}
 .chk{display:flex;gap:10px;align-items:flex-start;font-weight:400}.chk input{width:auto;margin-top:5px}
 .vid{width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;margin-bottom:8px}.vid iframe{width:100%;height:100%;border:0;display:block}
+.vid.vert{aspect-ratio:9/16;width:100%;max-width:min(100%,calc(80vh * 9 / 16));margin:0 auto 12px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -318,8 +319,8 @@ async function loadFeed() {
       const f = document.createElement('iframe');
       f.src = 'https://www.youtube-nocookie.com/embed/' + r.video + '?rel=0&playsinline=1';
       f.title = 'Video ng Sariwang Mushroom'; f.allowFullscreen = true; f.loading = 'lazy';
-      f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture';
-      $('heroVid').replaceChildren(f); $('heroVid').hidden = false; $('heroSvg').style.display = 'none';
+      f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      $('heroVid').classList.toggle('vert', !!r.vertical); $('heroVid').replaceChildren(f); $('heroVid').hidden = false; $('heroSvg').style.display = 'none';
     }
     $('gal').textContent = ''; $('revs').textContent = '';
     r.gallery.forEach(g => item($('gal'), g.url, [[g.caption]]));
