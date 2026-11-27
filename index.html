@@ -166,7 +166,7 @@ const isMobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 function openMail(web) {
   if (!cur) return;
   const su = encodeURIComponent('GCash payment - ' + cur.id);
-  const body = encodeURIComponent('Order ID: ' + cur.id + '\nPangalan: ' + cur.name + '\nKilo: ' + cur.kilo + '\nTotal: ₱' + cur.total + '\n\nNaka-attach ang screenshot ng GCash payment ko.');
+  const body = encodeURIComponent('Order ID: ' + cur.id + '\nPangalan: ' + cur.name + '\nAddress: ' + cur.address + '\nKilo: ' + cur.kilo + '\nTotal: ₱' + cur.total + '\n\nNaka-attach ang screenshot ng GCash payment ko.');
   mailOpened = true;
   if (web || !isMobile) window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + PAY_EMAIL + '&su=' + su + '&body=' + body, '_blank');
   else location.href = 'mailto:' + PAY_EMAIL + '?subject=' + su + '&body=' + body;
@@ -200,7 +200,7 @@ $('form').addEventListener('submit', async ev => {
   try {
     const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
     if (!r.ok) throw new Error(r.error);
-    cur = { id: r.id, name: d.pangalan, kilo: d.kilo, total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
+    cur = { id: r.id, name: d.pangalan, address: d.address, kilo: d.kilo, total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
     $('oid').textContent = r.id; $('tid').value = r.id; $('tcp').value = d.cp; $('oGrid').classList.add('show-done');
     document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (e) { err.textContent = 'Hindi na-save ang order: ' + e.message; }
