@@ -69,26 +69,20 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gc);outline-offset:
 .trow{display:grid;gap:12px}@media(min-width:640px){.trow{grid-template-columns:1fr 1fr auto;align-items:end}}
 .trow .go{width:auto;padding:13px 22px}
 .meta{background:var(--soft);border-radius:12px;padding:12px 16px;margin-top:16px}
-footer{padding:36px 0 140px;color:var(--mute);font-size:.9rem;text-align:center}
-.chatbtn{position:fixed;right:8px;bottom:8px;z-index:20;border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center}
-.chatbtn span{background:var(--g);color:#fff;font:600 .85rem Figtree,sans-serif;padding:3px 12px;border-radius:20px}
-.chatbtn svg{overflow:visible;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
-.chatbtn .body{animation:bob 2s ease-in-out infinite}
-.chatbtn .arm{transform-origin:70px 76px;animation:wave 2.4s ease-in-out infinite}
-.chatbtn .eyes{transform-origin:50px 72px;animation:blink 3.5s infinite}
-.chatbtn .mouth{transform-origin:50px 84px}
-.chatbtn.talk .mouth{animation:talk .3s ease-in-out infinite alternate}
-.chatbtn.talk .body{animation-duration:.6s}
-@keyframes bob{50%{transform:translateY(-7px)}}
-@keyframes wave{0%,50%,100%{transform:rotate(0)}15%,35%{transform:rotate(-22deg)}25%{transform:rotate(8deg)}}
-@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-@keyframes talk{to{transform:scaleY(2.4)}}
-.chat{position:fixed;right:16px;bottom:130px;z-index:20;width:min(360px,calc(100% - 32px));height:min(460px,calc(100vh - 150px));background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
+footer{padding:36px 0 90px;color:var(--mute);font-size:.9rem;text-align:center}
+.chatbtn{position:fixed;right:16px;bottom:16px;z-index:20;border:0;background:var(--g);color:#fff;font:600 1rem Figtree,sans-serif;padding:14px 20px;border-radius:30px;cursor:pointer}
+.chat{position:fixed;right:16px;bottom:80px;z-index:20;width:min(360px,calc(100% - 32px));height:min(460px,calc(100vh - 100px));background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
 .chat[hidden]{display:none}.chat h3{background:var(--g);color:#fff;padding:14px 16px;font-size:1.05rem}
 .msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .msgs p{margin:0;padding:9px 12px;border-radius:12px;background:var(--soft);align-self:flex-start;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere}
 .msgs p.me{background:var(--g);color:#fff;align-self:flex-end}
 .chat form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}.chat form button{border:0;background:var(--g);color:#fff;border-radius:10px;padding:0 16px;font-weight:600;cursor:pointer}
+.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:20px}
+.item{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.item img,.item video,.item iframe{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border:0}
+.item figcaption{padding:10px 14px;overflow-wrap:anywhere}.stars{color:#c77f00;font-size:1.1rem}
+select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:#f7faf8;color:var(--ink)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:400}.chk input{width:auto;margin-top:5px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -98,20 +92,7 @@ footer{padding:36px 0 140px;color:var(--mute);font-size:.9rem;text-align:center}
   <div class="msgs" id="msgs" aria-live="polite"><p>Hello po! Ano po ang tanong ninyo tungkol sa mushroom o sa order?</p></div>
   <form id="cf"><input id="cq" maxlength="500" placeholder="I-type ang tanong" aria-label="Tanong"><button id="cs">Ipadala</button></form>
 </div>
-<button type="button" class="chatbtn" id="chatbtn" aria-label="Magtanong sa AI assistant">
-  <span>Magtanong</span>
-  <svg viewBox="0 0 100 110" width="84" height="92" aria-hidden="true">
-    <g class="body">
-      <path class="arm" d="M70 76 Q88 72 90 56" fill="none" stroke="#e8c9a0" stroke-width="8" stroke-linecap="round"/>
-      <path d="M30 78 Q14 82 14 92" fill="none" stroke="#e8c9a0" stroke-width="8" stroke-linecap="round"/>
-      <rect x="28" y="48" width="44" height="52" rx="20" fill="#f6e3c5"/>
-      <path d="M6 54 Q8 6 50 6 Q92 6 94 54 Q50 66 6 54Z" fill="#a8552f"/>
-      <circle cx="30" cy="30" r="7" fill="#f6e3c5"/><circle cx="64" cy="22" r="5" fill="#f6e3c5"/><circle cx="76" cy="42" r="4" fill="#f6e3c5"/>
-      <g class="eyes" fill="#13201a"><circle cx="41" cy="72" r="4"/><circle cx="59" cy="72" r="4"/></g>
-      <ellipse class="mouth" cx="50" cy="84" rx="6" ry="3" fill="#7a2f22"/>
-    </g>
-  </svg>
-</button>
+<button type="button" class="chatbtn" id="chatbtn">Magtanong</button>
 <header><div class="w">
   <span class="brand"><svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1b4d3e"/><path d="M8 22c0-8 5-13 12-13s12 5 12 13c-8 2-16 2-24 0z" fill="#fff"/><rect x="16" y="22" width="8" height="10" rx="4" fill="#cfe3d8"/></svg>Sariwang Mushroom</span>
   <a href="#track">Subaybayan ang order</a><a class="btn" href="#order">Mag-order</a>
@@ -192,10 +173,33 @@ footer{padding:36px 0 140px;color:var(--mute);font-size:.9rem;text-align:center}
     </div>
   </section>
 </main>
+<div class="w">
+<section id="galSec" hidden><div class="sec"><h2>Mga larawan at video</h2></div><div class="cards" id="gal"></div></section>
+<section id="rate"><div class="sec"><h2>Rating ng mga customer</h2><p id="avg">Natanggap mo na ang order? I-rate kami.</p></div>
+  <div class="cards" id="revs"></div>
+  <form class="card" id="rf">
+    <div class="trow f"><div><label for="rid">Order ID</label><input id="rid" required></div><div><label for="rcp">CP number</label><input id="rcp" inputmode="tel" required></div></div>
+    <div class="f"><label for="rs">Rating</label><select id="rs" required><option value="">Pumili</option><option value="5">★★★★★ Napakaganda</option><option value="4">★★★★ Maganda</option><option value="3">★★★ Okay</option><option value="2">★★ Kulang</option><option value="1">★ Hindi maganda</option></select></div>
+    <div class="f"><label for="rc">Komento</label><textarea id="rc" maxlength="500"></textarea></div>
+    <div class="f"><label for="rp">Picture ng natanggap na produkto (opsyonal)</label><input id="rp" type="file" accept="image/*"></div>
+    <div class="f"><label class="chk"><input type="checkbox" id="ro"><span>Pumapayag akong ipakita sa website ang unang pangalan, rating, komento at picture ko.</span></label></div>
+    <p class="err" id="rerr" role="status"></p><button class="go" id="rgo">Ipadala ang rating</button>
+  </form>
+</section>
+<section id="ask"><div class="sec"><h2>Tanong, inquiry o reklamo</h2><p>Sasagot agad ang AI assistant, at makakarating ang mensahe kay Boss Joel.</p></div>
+  <form class="card" id="qf">
+    <div class="trow f"><div><label for="qn">Pangalan</label><input id="qn" maxlength="80" required></div><div><label for="qc">CP number</label><input id="qc" inputmode="tel" maxlength="20" required></div></div>
+    <div class="f"><label for="qt">Uri</label><select id="qt"><option>Tanong</option><option>Inquiry</option><option>Reklamo</option></select></div>
+    <div class="f"><label for="qm">Mensahe</label><textarea id="qm" maxlength="450" required></textarea></div>
+    <p class="err" id="qerr" role="status"></p><button class="go" id="qgo">Ipadala ang mensahe</button>
+    <div class="review" id="qres" hidden><b>Sagot ng AI assistant</b><p id="qa"></p></div>
+  </form>
+</section>
+</div>
 <footer>Mga tanong? I-message kami. Salamat sa pagsuporta sa lokal na mushroom.</footer>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbwwmqdYQrKujmAnfFOox4j3OexyUq6WQNnctGQ659rRuiR0p4Fbph25K77wzNdVqfyoQA/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbxAgaCF7icq6jt1LF6e7RZsGyT129kcE6DuvVeJBqtD-wFHklPJioC5Zy45qXQNdByQnA/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -272,7 +276,7 @@ $('cf').addEventListener('submit', async ev => {
   ev.preventDefault();
   const q = $('cq').value.trim();
   if (!q || $('cs').disabled) return;
-  $('cq').value = ''; $('cs').disabled = true; bubble(q, true); $('chatbtn').classList.add('talk');
+  $('cq').value = ''; $('cs').disabled = true; bubble(q, true);
   const wait = bubble('Nagta-type…');
   hist.push({ role: 'user', text: q });
   try {
@@ -280,7 +284,70 @@ $('cf').addEventListener('submit', async ev => {
     if (!r.ok || !r.reply) throw new Error(r.error || 'Hindi pa naka-update ang assistant.');
     wait.textContent = r.reply; hist.push({ role: 'model', text: r.reply });
   } catch (e) { wait.textContent = e.message; hist.pop(); }
-  finally { setTimeout(() => $('chatbtn').classList.remove('talk'), 1500); $('cs').disabled = false; $('msgs').scrollTop = $('msgs').scrollHeight; }
+  finally { $('cs').disabled = false; $('msgs').scrollTop = $('msgs').scrollHeight; }
+});
+
+function media(url) {
+  const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
+  const dr = url.match(/drive\.google\.com\/.*?(?:\/d\/|[?&]id=)([\w-]{20,})/);
+  let tag = 'img', src = url;
+  if (yt) { tag = 'iframe'; src = 'https://www.youtube.com/embed/' + yt[1]; }
+  else if (dr) { if (url.includes('#video')) { tag = 'iframe'; src = 'https://drive.google.com/file/d/' + dr[1] + '/preview'; } else src = 'https://drive.google.com/thumbnail?id=' + dr[1] + '&sz=w1000'; }
+  else if (/\.(mp4|webm)(\?|$)/i.test(url)) tag = 'video';
+  const el = document.createElement(tag); el.src = src;
+  if (tag === 'video') el.controls = true;
+  if (tag === 'iframe') el.allowFullscreen = true;
+  if (tag === 'img') { el.alt = 'Larawan mula sa Sariwang Mushroom'; el.loading = 'lazy'; }
+  return el;
+}
+function item(box, url, lines) {
+  const f = document.createElement('figure'); f.className = 'item';
+  if (url) f.appendChild(media(url));
+  const c = document.createElement('figcaption');
+  lines.forEach(([t, k]) => { if (!t) return; const d = document.createElement('div'); d.textContent = t; if (k) d.className = k; c.appendChild(d); });
+  if (c.childNodes.length) f.appendChild(c);
+  box.appendChild(f);
+}
+async function loadFeed() {
+  try {
+    const r = await (await fetch(API_URL + '?action=feed')).json();
+    if (!r.ok || !r.gallery) return;
+    $('gal').textContent = ''; $('revs').textContent = '';
+    r.gallery.forEach(g => item($('gal'), g.url, [[g.caption]]));
+    $('galSec').hidden = !r.gallery.length;
+    r.reviews.forEach(v => item($('revs'), v.photo, [['★'.repeat(v.stars) + '☆'.repeat(5 - v.stars), 'stars'], [v.text], [v.name]]));
+    if (r.count) $('avg').textContent = 'Average: ' + r.average + ' sa 5, mula sa ' + r.count + ' rating.';
+  } catch (e) { console.error(e); }
+}
+loadFeed();
+async function shrink(file) {
+  const img = await createImageBitmap(file);
+  const k = Math.min(1, 1200 / Math.max(img.width, img.height));
+  const c = document.createElement('canvas'); c.width = img.width * k; c.height = img.height * k;
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', .8).split(',')[1];
+}
+$('rf').addEventListener('submit', async ev => {
+  ev.preventDefault(); const m = $('rerr'); m.textContent = 'Ipinapadala…'; $('rgo').disabled = true;
+  try {
+    const file = $('rp').files[0];
+    const d = { action: 'review', id: $('rid').value, cp: $('rcp').value, stars: Number($('rs').value), text: $('rc').value, consent: $('ro').checked, photo: file ? await shrink(file) : '' };
+    const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
+    if (!r.ok || !r.saved) throw new Error(r.error || 'Hindi pa naka-update ang system.');
+    $('rf').reset(); m.textContent = 'Salamat po! Natanggap na ang rating ninyo.';
+  } catch (e) { m.textContent = 'Hindi naipadala: ' + e.message; }
+  finally { $('rgo').disabled = false; }
+});
+
+$('qf').addEventListener('submit', async ev => {
+  ev.preventDefault(); const m = $('qerr'); m.textContent = 'Ipinapadala…'; $('qres').hidden = true; $('qgo').disabled = true;
+  try {
+    const d = { action: 'inquiry', name: $('qn').value, cp: $('qc').value, type: $('qt').value, message: $('qm').value };
+    const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
+    if (!r.ok || !r.saved) throw new Error(r.error || 'Hindi pa naka-update ang system.');
+    $('qm').value = ''; m.textContent = 'Natanggap na ang mensahe ninyo.'; $('qa').textContent = r.reply; $('qres').hidden = false;
+  } catch (e) { m.textContent = 'Hindi naipadala: ' + e.message; }
+  finally { $('qgo').disabled = false; }
 });
 </script>
 </body>
