@@ -11,7 +11,7 @@
 <style>
 :root{--bg:#f2f5ee;--card:#fff;--ink:#14231c;--mute:#55675d;--line:#dbe3d6;--g:#12372a;--g2:#1f5a43;--moss:#3c8a62;--gold:#f0bf4c;--gold2:#e4ac2c;--tan:#efe3cc;--gc:#0a6cf0;--soft:#e6eee2;--err:#b3261e;--ok:#1d7a4a}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Figtree,system-ui,sans-serif}
 h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.02em;line-height:1.1}
 .w{max-width:1080px;margin:0 auto;padding:0 20px}
@@ -24,8 +24,8 @@ header a.btn:hover{background:var(--g2)}
 header a,.brand{white-space:nowrap}
 @media(max-width:520px){header .w{gap:12px}header a:not(.btn){display:none}.brand{font-size:1.1rem}}
 .herob{background:var(--g);color:#f4f1e8}
-.hero{display:grid;gap:36px;padding:56px 20px 72px;align-items:center}
-@media(min-width:860px){.hero{grid-template-columns:1.1fr 1fr;gap:56px;padding-top:72px;padding-bottom:88px}}
+.hero{display:grid;gap:36px;padding:44px 20px 72px;align-items:center}
+@media(min-width:860px){.hero{grid-template-columns:1.1fr 1fr;gap:56px;padding-top:64px;padding-bottom:88px}}
 h1{font-size:clamp(2.4rem,6vw,4.1rem);font-weight:800;color:#fff}
 .lead{color:#c6d6cb;font-size:1.15rem;max-width:44ch;margin:18px 0 26px}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}
@@ -116,10 +116,6 @@ select{width:100%;font:inherit;padding:13px;border:1.5px solid var(--line);borde
   <form id="cf"><input id="cq" maxlength="500" placeholder="I-type ang tanong" aria-label="Tanong"><button id="cs">Ipadala</button></form>
 </div>
 <button type="button" class="chatbtn" id="chatbtn">Magtanong</button>
-<header><div class="w">
-  <span class="brand"><svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1b4d3e"/><path d="M8 22c0-8 5-13 12-13s12 5 12 13c-8 2-16 2-24 0z" fill="#fff"/><rect x="16" y="22" width="8" height="10" rx="4" fill="#cfe3d8"/></svg>Sariwang Mushroom</span>
-  <a href="#track">Subaybayan ang order</a><a class="btn" href="#order">Mag-order</a>
-</div></header>
 
 <div class="herob"><div class="w hero">
     <div>
@@ -345,9 +341,9 @@ async function loadFeed() {
     if (!r.ok || !r.gallery) return;
     if (r.video && /^[\w-]{11}$/.test(r.video)) {
       const f = document.createElement('iframe');
-      f.src = 'https://www.youtube-nocookie.com/embed/' + r.video + '?rel=0&playsinline=1';
-      f.title = 'Video ng Sariwang Mushroom'; f.allowFullscreen = true; f.loading = 'lazy';
-      f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      f.src = 'https://www.youtube-nocookie.com/embed/' + r.video + '?autoplay=1&mute=1&loop=1&playlist=' + r.video + '&rel=0&playsinline=1';
+      f.title = 'Video ng Sariwang Mushroom'; f.allowFullscreen = true; 
+      f.allow = 'autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
       $('heroVid').classList.toggle('vert', !!r.vertical); $('heroVid').replaceChildren(f); $('heroVid').hidden = false; $('heroSvg').style.display = 'none';
     }
     $('gal').textContent = ''; $('revs').textContent = '';
