@@ -3,89 +3,110 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#12372a">
 <title>Sariwang Mushroom | Order at Subaybayan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef3f0;--card:#fff;--ink:#13201a;--mute:#566a60;--line:#d5e0d9;--g:#1b4d3e;--g2:#276b57;--gc:#0a6cf0;--soft:#e4eee8;--err:#b3261e;--ok:#1d7a4a}
+:root{--bg:#f2f5ee;--card:#fff;--ink:#14231c;--mute:#55675d;--line:#dbe3d6;--g:#12372a;--g2:#1f5a43;--moss:#3c8a62;--gold:#f0bf4c;--gold2:#e4ac2c;--tan:#efe3cc;--gc:#0a6cf0;--soft:#e6eee2;--err:#b3261e;--ok:#1d7a4a}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Figtree,system-ui,sans-serif}
 h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.02em;line-height:1.1}
-.w{max-width:1040px;margin:0 auto;padding:0 20px}
-header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-header .w{display:flex;align-items:center;gap:20px;height:64px}
+.w{max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+header .w{display:flex;align-items:center;gap:20px;height:66px}
 .brand{font:800 1.2rem "Bricolage Grotesque",sans-serif;color:var(--g);margin-right:auto;display:flex;gap:10px;align-items:center}
 header a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
-header a.btn{background:var(--g);color:#fff;padding:9px 16px;border-radius:10px}
-.hero{display:grid;gap:32px;padding:52px 0 36px;align-items:center}
-@media(min-width:860px){.hero{grid-template-columns:1.1fr 1fr}}
-h1{font-size:clamp(2.2rem,5.5vw,3.5rem);font-weight:800}
-.lead{color:var(--mute);font-size:1.1rem;max-width:44ch;margin:14px 0 22px}
-.facts{display:grid;gap:8px;padding:0;margin:0;list-style:none;color:var(--mute)}
-.facts li:before{content:"✓";color:var(--ok);font-weight:700;margin-right:10px}
-.prod{background:var(--g);color:#fff;border-radius:24px;padding:30px;display:grid;gap:6px}
-.prod svg{width:150px;height:auto;margin-bottom:8px}
-.prod b{font:800 2.6rem "Bricolage Grotesque",sans-serif}
-.prod span{opacity:.8}
-section{padding:28px 0}
-.sec{margin-bottom:18px}.sec h2{font-size:1.8rem}.sec p{margin:6px 0 0;color:var(--mute)}
-.grid{display:grid;gap:20px}
+header a.btn{background:var(--g);color:#fff;padding:10px 18px;border-radius:999px}
+header a.btn:hover{background:var(--g2)}
+header a,.brand{white-space:nowrap}
+@media(max-width:520px){header .w{gap:12px}header a:not(.btn){display:none}.brand{font-size:1.1rem}}
+.herob{background:var(--g);color:#f4f1e8}
+.hero{display:grid;gap:36px;padding:56px 20px 72px;align-items:center}
+@media(min-width:860px){.hero{grid-template-columns:1.1fr 1fr;gap:56px;padding-top:72px;padding-bottom:88px}}
+h1{font-size:clamp(2.4rem,6vw,4.1rem);font-weight:800;color:#fff}
+.lead{color:#c6d6cb;font-size:1.15rem;max-width:44ch;margin:18px 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}
+.cta a{text-decoration:none;font:700 1.02rem Figtree,sans-serif;padding:14px 24px;border-radius:999px}
+.cta .p{background:var(--gold);color:#2a1f00}.cta .p:hover{background:var(--gold2)}
+.cta .s{border:1.5px solid rgba(255,255,255,.4);color:#fff}.cta .s:hover{background:rgba(255,255,255,.1)}
+.facts{display:grid;gap:8px;padding:0;margin:0;list-style:none;color:#d7e3da}
+.facts li:before{content:"✓";color:var(--gold);font-weight:700;margin-right:10px}
+.prod{background:var(--tan);color:var(--ink);border-radius:30px;padding:28px;display:grid;gap:8px}
+.prod svg{width:100%;max-width:300px;height:auto;margin:0 auto}
+.prod svg .m{transform-box:fill-box;transform-origin:50% 100%;animation:sprout .9s cubic-bezier(.2,.8,.2,1) both}
+.prod svg .m2{animation-delay:.12s}.prod svg .m3{animation-delay:.24s}
+@keyframes sprout{from{transform:scale(.55) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.pr{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-top:1.5px dashed #c9b48a;padding-top:16px;margin-top:6px}
+.pr .lbl{display:block;color:#6a5b3c;font-size:.92rem}
+.pr b{font:800 3.1rem/1 "Bricolage Grotesque",sans-serif;color:var(--g)}
+.pr .min{color:#6a5b3c;font-size:.92rem;text-align:right;max-width:14ch}
+section{padding:36px 0}
+.sec{margin-bottom:22px}.sec h2{font-size:clamp(1.7rem,3.6vw,2.3rem)}.sec p{margin:8px 0 0;color:var(--mute);max-width:60ch}
+.grid{display:grid;gap:22px}
 @media(min-width:860px){.grid{grid-template-columns:1.15fr 1fr;align-items:start}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
-.card h3{font-size:1.25rem;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px}
+.card h3{font-size:1.3rem;margin-bottom:18px}
 .f{margin-bottom:16px}
 label{display:block;font-weight:600;font-size:.93rem;margin-bottom:6px}
-input,textarea{width:100%;font:inherit;color:var(--ink);background:#f7faf8;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px}
-textarea{min-height:84px;resize:vertical}
-input:focus,textarea:focus{outline:none;border-color:var(--g2);box-shadow:0 0 0 4px rgba(39,107,87,.15)}
+input,textarea{width:100%;font:inherit;color:var(--ink);background:#fafcf8;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;transition:border-color .15s,box-shadow .15s}
+textarea{min-height:88px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--moss);box-shadow:0 0 0 4px rgba(60,138,98,.18)}
 .step{display:flex;gap:8px;align-items:center}
-.step button{width:46px;height:46px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-size:1.4rem;cursor:pointer;color:var(--g)}
-.step input{text-align:center;font-weight:600;max-width:110px}
+.step button{width:48px;height:48px;border:1.5px solid var(--line);background:#fff;border-radius:12px;font-size:1.5rem;cursor:pointer;color:var(--g)}
+.step button:hover{background:var(--soft)}
+.step input{text-align:center;font-weight:700;max-width:110px}
 .pay{border-color:#bcd6fb;background:#f4f8ff}
-.qr{display:block;width:210px;max-width:100%;height:auto;margin:12px 0;border:1px solid #bcd6fb;border-radius:12px;background:#fff}
-.pay .no{font:800 1.7rem "Bricolage Grotesque",sans-serif;color:var(--gc);margin:2px 0}
-.tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);margin-top:14px;padding-top:14px}
-.tot b{font:800 1.9rem "Bricolage Grotesque",sans-serif;color:var(--g)}
+.qr{display:block;width:220px;max-width:100%;height:auto;margin:12px 0;border:1px solid #bcd6fb;border-radius:14px;background:#fff}
+.pay .no{font:800 1.8rem "Bricolage Grotesque",sans-serif;color:var(--gc);margin:2px 0}
+.tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1.5px dashed #b9d0f0;margin-top:14px;padding-top:14px}
+.tot b{font:800 2.1rem "Bricolage Grotesque",sans-serif;color:var(--g)}
 .drop{display:block;border:2px dashed #9cc0f5;border-radius:12px;padding:16px;text-align:center;color:var(--gc);font-weight:600;cursor:pointer;background:#fff}
 .drop img{max-width:100%;max-height:200px;border-radius:8px;display:none;margin:10px auto 0}
 .hint{font-size:.88rem;color:var(--mute);margin:10px 0 0}.hint a{color:var(--gc)}
-.review{background:#eaf6ef;border:1px solid #b9dcc6;border-radius:12px;padding:16px;text-align:left;margin:14px 0}.review p{margin:6px 0 0}
-.go{width:100%;border:0;background:var(--g);color:#fff;font:800 1.1rem "Bricolage Grotesque",sans-serif;padding:15px;border-radius:12px;cursor:pointer}
+.review{background:#e9f5ed;border:1px solid #b9dcc6;border-radius:14px;padding:16px;text-align:left;margin:14px 0}.review p{margin:6px 0 0}
+.go{width:100%;border:0;background:var(--g);color:#fff;font:800 1.1rem "Bricolage Grotesque",sans-serif;padding:16px;border-radius:14px;cursor:pointer;transition:background .15s}
 .go:hover{background:var(--g2)}.go:disabled{opacity:.6;cursor:wait}
 button:focus-visible,a:focus-visible{outline:3px solid var(--gc);outline-offset:2px}
-.again{background:#fff;color:var(--g);border:1.5px solid var(--g);font:600 .95rem Figtree,sans-serif;padding:11px 20px;border-radius:10px;cursor:pointer}
+.again{background:#fff;color:var(--g);border:1.5px solid var(--g);font:600 .95rem Figtree,sans-serif;padding:11px 20px;border-radius:999px;cursor:pointer}
 .err{color:var(--err);font-weight:600;min-height:1.4em;margin:0 0 10px}
-.done{display:none;text-align:center}.done .id{font:800 2rem "Bricolage Grotesque",sans-serif;color:var(--g);background:var(--soft);display:inline-block;padding:6px 18px;border-radius:12px;margin:10px 0}
+.done{display:none;text-align:center}.done .id{font:800 2rem "Bricolage Grotesque",sans-serif;color:var(--g);background:var(--soft);display:inline-block;padding:6px 20px;border-radius:14px;margin:10px 0}
 .show-done form,.show-done .payc{display:none}.show-done .done{display:block}
-.tl{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:0}
-.tl li{position:relative;padding:0 0 22px 36px;color:var(--mute)}
-.tl li:before{content:"";position:absolute;left:0;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--line)}
-.tl li:after{content:"";position:absolute;left:9px;top:25px;bottom:0;width:2px;background:var(--line)}
+.how{list-style:none;margin:0;padding:0;display:grid;gap:16px;counter-reset:s;color:var(--mute)}
+.how li{counter-increment:s;position:relative;padding-left:46px;min-height:32px}
+.how li:before{content:counter(s);position:absolute;left:0;top:-1px;width:32px;height:32px;border-radius:50%;background:var(--g);color:var(--gold);font:800 1rem "Bricolage Grotesque",sans-serif;display:grid;place-items:center}
+.tl{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:0}
+.tl li{position:relative;padding:0 0 24px 38px;color:var(--mute)}
+.tl li:before{content:"";position:absolute;left:0;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--line)}
+.tl li:after{content:"";position:absolute;left:10px;top:27px;bottom:0;width:2px;background:var(--line)}
 .tl li:last-child:after{display:none}
 .tl li.on{color:var(--ink);font-weight:600}.tl li.on:before{background:var(--ok);border-color:var(--ok)}
 .tl li.on:after{background:var(--ok)}
-.tl li.now:before{box-shadow:0 0 0 5px rgba(29,122,74,.2)}
+.tl li.now:before{box-shadow:0 0 0 6px rgba(29,122,74,.2)}
 .trow{display:grid;gap:12px}@media(min-width:640px){.trow{grid-template-columns:1fr 1fr auto;align-items:end}}
-.trow .go{width:auto;padding:13px 22px}
-.meta{background:var(--soft);border-radius:12px;padding:12px 16px;margin-top:16px}
-footer{padding:36px 0 90px;color:var(--mute);font-size:.9rem;text-align:center}
-.chatbtn{position:fixed;right:16px;bottom:16px;z-index:20;border:0;background:var(--g);color:#fff;font:600 1rem Figtree,sans-serif;padding:14px 20px;border-radius:30px;cursor:pointer}
-.chat{position:fixed;right:16px;bottom:80px;z-index:20;width:min(360px,calc(100% - 32px));height:min(460px,calc(100vh - 100px));background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
-.chat[hidden]{display:none}.chat h3{background:var(--g);color:#fff;padding:14px 16px;font-size:1.05rem}
-.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.msgs p{margin:0;padding:9px 12px;border-radius:12px;background:var(--soft);align-self:flex-start;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere}
+.trow .go{width:auto;padding:14px 26px}
+.meta{background:var(--soft);border-radius:14px;padding:14px 18px;margin-top:16px}
+footer{background:var(--g);color:#c6d6cb;padding:44px 20px 110px;font-size:.95rem;text-align:center}
+footer b{display:block;font:800 1.3rem "Bricolage Grotesque",sans-serif;color:#fff;margin-bottom:6px}
+.chatbtn{position:fixed;right:16px;bottom:16px;z-index:40;border:0;background:var(--gold);color:#2a1f00;font:700 1rem Figtree,sans-serif;padding:15px 22px;border-radius:999px;cursor:pointer;box-shadow:0 10px 28px rgba(18,55,42,.3)}
+.chatbtn:hover{background:var(--gold2)}
+.chat{position:fixed;right:16px;bottom:84px;z-index:40;width:min(370px,calc(100% - 32px));height:min(480px,calc(100vh - 110px));background:var(--card);border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 50px rgba(18,55,42,.28)}
+.chat[hidden]{display:none}.chat h3{background:var(--g);color:#fff;padding:16px 18px;font-size:1.05rem}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.msgs p{margin:0;padding:10px 13px;border-radius:14px;background:var(--soft);align-self:flex-start;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere}
 .msgs p.me{background:var(--g);color:#fff;align-self:flex-end}
-.chat form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}.chat form button{border:0;background:var(--g);color:#fff;border-radius:10px;padding:0 16px;font-weight:600;cursor:pointer}
-.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:20px}
-.item{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.chat form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}.chat form button{border:0;background:var(--g);color:#fff;border-radius:12px;padding:0 16px;font-weight:600;cursor:pointer}
+.cards{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:22px}
+.item{margin:0;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .item img,.item video,.item iframe{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border:0}
-.item figcaption{padding:10px 14px;overflow-wrap:anywhere}.stars{color:#c77f00;font-size:1.1rem}
-select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:#f7faf8;color:var(--ink)}
+.item figcaption{padding:12px 16px;overflow-wrap:anywhere}.stars{color:#c77f00;font-size:1.1rem}
+select{width:100%;font:inherit;padding:13px;border:1.5px solid var(--line);border-radius:12px;background:#fafcf8;color:var(--ink)}
 .chk{display:flex;gap:10px;align-items:flex-start;font-weight:400}.chk input{width:auto;margin-top:5px}
-.vid{width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;margin-bottom:8px}.vid iframe{width:100%;height:100%;border:0;display:block}
+.vid{width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;margin-bottom:8px}.vid iframe{width:100%;height:100%;border:0;display:block}
 .vid.vert{aspect-ratio:9/16;width:100%;max-width:min(100%,calc(80vh * 9 / 16));margin:0 auto 12px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -100,19 +121,26 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
   <a href="#track">Subaybayan ang order</a><a class="btn" href="#order">Mag-order</a>
 </div></header>
 
-<main class="w">
-  <div class="hero">
+<div class="herob"><div class="w hero">
     <div>
       <h1>Sariwang mushroom, diretso sa inyong bahay.</h1>
       <p class="lead">Mag-order online, magbayad sa GCash, at subaybayan ang delivery gamit ang Order ID mo.</p>
+      <div class="cta"><a class="p" href="#order">Mag-order ngayon</a><a class="s" href="#track">Subaybayan ang order</a></div>
       <ul class="facts"><li>Bagong pitas at maayos ang pagkakabalot</li><li>GCash lang muna ang bayad</li><li>May status update mula bayad hanggang delivery</li></ul>
     </div>
     <div class="prod">
       <div class="vid" id="heroVid" hidden></div>
-      <svg id="heroSvg" viewBox="0 0 150 120" aria-hidden="true"><path d="M10 70C10 30 40 8 75 8s65 22 65 62c-40 10-90 10-130 0z" fill="#e9d9bf"/><circle cx="50" cy="38" r="9" fill="#fff" opacity=".8"/><circle cx="92" cy="28" r="7" fill="#fff" opacity=".8"/><circle cx="112" cy="50" r="8" fill="#fff" opacity=".8"/><rect x="55" y="68" width="40" height="46" rx="18" fill="#cfe3d8"/></svg>
-      <span>Presyo kada kilo</span><b>₱<span id="price">…</span></b><span>Minimum na order: ½ kilo</span>
+      <svg id="heroSvg" viewBox="0 0 240 190" aria-hidden="true">
+        <ellipse cx="120" cy="175" rx="104" ry="9" fill="#12372a" opacity=".14"/>
+        <g class="m m2"><path d="M45 148c0-12 3-24 5-38h18c-1 14 0 26 2 38z" fill="#f1e7d2" transform="translate(-4 24)"/><path d="M14 140C14 112 34 96 58 96s44 16 44 44c-22 8-66 8-88 0z" fill="#cdb48a"/><path d="M24 142c22 6 56 6 68 0" stroke="#b79d70" stroke-width="2" fill="none"/><circle cx="46" cy="112" r="5" fill="#efe3cc" opacity=".7"/></g>
+        <g class="m m3"><path d="M168 136c0 14-1 24-2 36h24c-1-12-2-22-2-36z" fill="#f1e7d2"/><path d="M138 130C138 104 156 90 178 90s42 14 42 40c-20 8-62 8-82 0z" fill="#d6bf96"/><path d="M148 132c20 6 52 6 62 0" stroke="#bda57a" stroke-width="2" fill="none"/><circle cx="170" cy="105" r="5" fill="#efe3cc" opacity=".7"/></g>
+        <g class="m m1"><path d="M104 108C104 134 100 156 98 172h44c-2-16-6-38-6-64z" fill="#f7f0e1"/><path d="M50 100C50 55 82 28 120 28s70 27 70 72c-40 12-100 12-140 0z" fill="#dcc7a0"/><path d="M62 103c38 12 78 12 116 0" stroke="#c2a97b" stroke-width="2.5" fill="none"/><circle cx="96" cy="56" r="8" fill="#efe3cc" opacity=".75"/><circle cx="140" cy="48" r="6" fill="#efe3cc" opacity=".75"/><circle cx="162" cy="74" r="7" fill="#efe3cc" opacity=".75"/></g>
+      </svg>
+      <div class="pr"><div><span class="lbl">Presyo kada kilo</span><b>₱<span id="price">…</span></b></div><span class="min">Minimum na order: ½ kilo</span></div>
     </div>
-  </div>
+  </div></div>
+
+<main class="w">
 
   <section id="order">
     <div class="sec"><h2>Mag-order</h2><p>Punan ang detalye, magbayad sa GCash, at i-upload ang screenshot.</p></div>
@@ -155,7 +183,7 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
       </div>
       <div class="card">
         <h3>Paano mag-order</h3>
-        <ol style="margin:0;padding-left:20px;color:var(--mute)"><li>Ilagay ang pangalan, CP number, address at kilo.</li><li>Mag-send ng GCash sa nakasulat na number.</li><li>I-screenshot ang payment at i-upload dito.</li><li>Hintayin ang verification, tapos subaybayan ang order mo.</li></ol>
+        <ol class="how"><li>Ilagay ang pangalan, CP number, address at kilo.</li><li>Mag-send ng GCash sa nakasulat na number.</li><li>I-screenshot ang payment at i-upload dito.</li><li>Hintayin ang verification, tapos subaybayan ang order mo.</li></ol>
       </div>
     </div>
   </section>
@@ -199,7 +227,7 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
   </form>
 </section>
 </div>
-<footer>Mga tanong? I-message kami. Salamat sa pagsuporta sa lokal na mushroom.</footer>
+<footer><b>Sariwang Mushroom</b>Mga tanong? I-message kami. Salamat sa pagsuporta sa lokal na mushroom.</footer>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbyUU-CpU_dtc1MlGfsUJj2Od5_SQDvsltWUs8PmnasE8I3epGOmktpjapzty87q-_nFRw/exec';   // galing sa Apps Script > Deploy > Web app
