@@ -69,11 +69,49 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gc);outline-offset:
 .trow{display:grid;gap:12px}@media(min-width:640px){.trow{grid-template-columns:1fr 1fr auto;align-items:end}}
 .trow .go{width:auto;padding:13px 22px}
 .meta{background:var(--soft);border-radius:12px;padding:12px 16px;margin-top:16px}
-footer{padding:36px 0;color:var(--mute);font-size:.9rem;text-align:center}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+footer{padding:36px 0 140px;color:var(--mute);font-size:.9rem;text-align:center}
+.chatbtn{position:fixed;right:8px;bottom:8px;z-index:20;border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center}
+.chatbtn span{background:var(--g);color:#fff;font:600 .85rem Figtree,sans-serif;padding:3px 12px;border-radius:20px}
+.chatbtn svg{overflow:visible;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.chatbtn .body{animation:bob 2s ease-in-out infinite}
+.chatbtn .arm{transform-origin:70px 76px;animation:wave 2.4s ease-in-out infinite}
+.chatbtn .eyes{transform-origin:50px 72px;animation:blink 3.5s infinite}
+.chatbtn .mouth{transform-origin:50px 84px}
+.chatbtn.talk .mouth{animation:talk .3s ease-in-out infinite alternate}
+.chatbtn.talk .body{animation-duration:.6s}
+@keyframes bob{50%{transform:translateY(-7px)}}
+@keyframes wave{0%,50%,100%{transform:rotate(0)}15%,35%{transform:rotate(-22deg)}25%{transform:rotate(8deg)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes talk{to{transform:scaleY(2.4)}}
+.chat{position:fixed;right:16px;bottom:130px;z-index:20;width:min(360px,calc(100% - 32px));height:min(460px,calc(100vh - 150px));background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
+.chat[hidden]{display:none}.chat h3{background:var(--g);color:#fff;padding:14px 16px;font-size:1.05rem}
+.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msgs p{margin:0;padding:9px 12px;border-radius:12px;background:var(--soft);align-self:flex-start;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere}
+.msgs p.me{background:var(--g);color:#fff;align-self:flex-end}
+.chat form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}.chat form button{border:0;background:var(--g);color:#fff;border-radius:10px;padding:0 16px;font-weight:600;cursor:pointer}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<div class="chat" id="chat" hidden>
+  <h3>AI Assistant</h3>
+  <div class="msgs" id="msgs" aria-live="polite"><p>Hello po! Ano po ang tanong ninyo tungkol sa mushroom o sa order?</p></div>
+  <form id="cf"><input id="cq" maxlength="500" placeholder="I-type ang tanong" aria-label="Tanong"><button id="cs">Ipadala</button></form>
+</div>
+<button type="button" class="chatbtn" id="chatbtn" aria-label="Magtanong sa AI assistant">
+  <span>Magtanong</span>
+  <svg viewBox="0 0 100 110" width="84" height="92" aria-hidden="true">
+    <g class="body">
+      <path class="arm" d="M70 76 Q88 72 90 56" fill="none" stroke="#e8c9a0" stroke-width="8" stroke-linecap="round"/>
+      <path d="M30 78 Q14 82 14 92" fill="none" stroke="#e8c9a0" stroke-width="8" stroke-linecap="round"/>
+      <rect x="28" y="48" width="44" height="52" rx="20" fill="#f6e3c5"/>
+      <path d="M6 54 Q8 6 50 6 Q92 6 94 54 Q50 66 6 54Z" fill="#a8552f"/>
+      <circle cx="30" cy="30" r="7" fill="#f6e3c5"/><circle cx="64" cy="22" r="5" fill="#f6e3c5"/><circle cx="76" cy="42" r="4" fill="#f6e3c5"/>
+      <g class="eyes" fill="#13201a"><circle cx="41" cy="72" r="4"/><circle cx="59" cy="72" r="4"/></g>
+      <ellipse class="mouth" cx="50" cy="84" rx="6" ry="3" fill="#7a2f22"/>
+    </g>
+  </svg>
+</button>
 <header><div class="w">
   <span class="brand"><svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1b4d3e"/><path d="M8 22c0-8 5-13 12-13s12 5 12 13c-8 2-16 2-24 0z" fill="#fff"/><rect x="16" y="22" width="8" height="10" rx="4" fill="#cfe3d8"/></svg>Sariwang Mushroom</span>
   <a href="#track">Subaybayan ang order</a><a class="btn" href="#order">Mag-order</a>
@@ -225,6 +263,24 @@ $('tf').addEventListener('submit', async ev => {
     $('tres').hidden = false;
   } catch (e) { te.textContent = e.message || 'Hindi mahanap ang order.'; }
   finally { $('tgo').disabled = false; }
+});
+
+const hist = [];
+function bubble(text, me) { const p = document.createElement('p'); p.textContent = text; if (me) p.className = 'me'; $('msgs').appendChild(p); $('msgs').scrollTop = $('msgs').scrollHeight; return p; }
+$('chatbtn').onclick = () => { $('chat').hidden = !$('chat').hidden; if (!$('chat').hidden) $('cq').focus(); };
+$('cf').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const q = $('cq').value.trim();
+  if (!q || $('cs').disabled) return;
+  $('cq').value = ''; $('cs').disabled = true; bubble(q, true); $('chatbtn').classList.add('talk');
+  const wait = bubble('Nagta-type…');
+  hist.push({ role: 'user', text: q });
+  try {
+    const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'chat', history: hist.slice(-7) }) })).json();
+    if (!r.ok || !r.reply) throw new Error(r.error || 'Hindi pa naka-update ang assistant.');
+    wait.textContent = r.reply; hist.push({ role: 'model', text: r.reply });
+  } catch (e) { wait.textContent = e.message; hist.pop(); }
+  finally { setTimeout(() => $('chatbtn').classList.remove('talk'), 1500); $('cs').disabled = false; $('msgs').scrollTop = $('msgs').scrollHeight; }
 });
 </script>
 </body>
