@@ -237,7 +237,7 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbwG__Qz0vHk5_wsKP9zxVa4p7XDmr78BWnaigpG_UB1pSuD4pBbfGWZxM2O1aSqF_oPug/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbyC5OhbsV_v9WZHRYqjABMb7o77Qj893uK0hPMjfP6ytR4ZmkxUdw_9NNKcKK8mEJTRgQ/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [], TIERS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -258,7 +258,7 @@ $('again2').onclick = e => { e.preventDefault(); openMail(false); };
 $('sentBtn').onclick = e => { e.preventDefault(); showReview(); };
 document.addEventListener('visibilitychange', () => { if (mailOpened && document.visibilityState === 'visible') showReview(); });
 const peso = n => '₱' + Number(n).toLocaleString('en-PH');
-let PRODS = [], MAIN = null, sel = 0, qty = 1, drawn = false, cart = [], VID = '', VERT = false;
+let GAL = [], PRODS = [], MAIN = null, sel = 0, qty = 1, drawn = false, cart = [], VID = '', VERT = false;
 const rate = k => PRICE - (TIERS.filter(t => k >= t.min).pop() || { off: 0 }).off;
 const orderTotal = ls => { const r = rate(ls.reduce((a, l) => a + l.kilo, 0)); return ls.reduce((a, l) => a + Math.round(l.kilo * r), 0); };
 const kl = q => q === .5 ? '½ kilo' : q < 1 ? Math.round(q * 1000) + ' gramo' : q + ' kilo';
@@ -349,7 +349,7 @@ function renderCart() {
 }
 
 fetch(API_URL + '?action=config').then(r => r.json()).then(c => {
-  PRICE = c.price; TIERS = c.tiers || []; STEPS = c.statuses; $('gno').textContent = c.gcashNo; $('gnm').textContent = c.gcashName; calc();
+  PRICE = c.price; TIERS = c.tiers || []; STEPS = c.statuses; if (PRODS.length) drawShop(GAL); $('gno').textContent = c.gcashNo; $('gnm').textContent = c.gcashName; calc();
 }).catch(() => { $('err').textContent = 'Hindi ma-load ang presyo. I-refresh ang page.'; });
 
 const setQ = v => { qty = Math.min(500, Math.max(.25, Math.round(v * 4) / 4)); calc(); };
@@ -443,7 +443,7 @@ async function loadFeed() {
     $('gal').textContent = ''; $('revs').textContent = '';
     r.gallery.forEach(g => item($('gal'), g.url, [[g.caption]]));
     $('galSec').hidden = !r.gallery.length;
-    MAIN = (r.products || []).find(p => p.main); PRODS = (r.products || []).filter(p => !p.main).sort((a, b) => a.kilo - b.kilo); drawShop(r.gallery);
+    MAIN = (r.products || []).find(p => p.main); PRODS = (r.products || []).filter(p => !p.main).sort((a, b) => a.kilo - b.kilo); GAL = r.gallery; drawShop(GAL);
     r.reviews.forEach(v => item($('revs'), v.photo, [['★'.repeat(v.stars) + '☆'.repeat(5 - v.stars), 'stars'], [v.text], [v.name]]));
     if (r.count) { $('avg').textContent = 'Average: ' + r.average + ' sa 5, mula sa ' + r.count + ' rating.'; $('stat').textContent = '★ ' + r.average + ' | ' + r.count + ' rating'; }
   } catch (e) { console.error(e); }
