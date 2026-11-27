@@ -83,6 +83,7 @@ footer{padding:36px 0 90px;color:var(--mute);font-size:.9rem;text-align:center}
 .item figcaption{padding:10px 14px;overflow-wrap:anywhere}.stars{color:#c77f00;font-size:1.1rem}
 select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:#f7faf8;color:var(--ink)}
 .chk{display:flex;gap:10px;align-items:flex-start;font-weight:400}.chk input{width:auto;margin-top:5px}
+.vid{width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;margin-bottom:8px}.vid iframe{width:100%;height:100%;border:0;display:block}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -106,7 +107,8 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
       <ul class="facts"><li>Bagong pitas at maayos ang pagkakabalot</li><li>GCash lang muna ang bayad</li><li>May status update mula bayad hanggang delivery</li></ul>
     </div>
     <div class="prod">
-      <svg viewBox="0 0 150 120" aria-hidden="true"><path d="M10 70C10 30 40 8 75 8s65 22 65 62c-40 10-90 10-130 0z" fill="#e9d9bf"/><circle cx="50" cy="38" r="9" fill="#fff" opacity=".8"/><circle cx="92" cy="28" r="7" fill="#fff" opacity=".8"/><circle cx="112" cy="50" r="8" fill="#fff" opacity=".8"/><rect x="55" y="68" width="40" height="46" rx="18" fill="#cfe3d8"/></svg>
+      <div class="vid" id="heroVid" hidden></div>
+      <svg id="heroSvg" viewBox="0 0 150 120" aria-hidden="true"><path d="M10 70C10 30 40 8 75 8s65 22 65 62c-40 10-90 10-130 0z" fill="#e9d9bf"/><circle cx="50" cy="38" r="9" fill="#fff" opacity=".8"/><circle cx="92" cy="28" r="7" fill="#fff" opacity=".8"/><circle cx="112" cy="50" r="8" fill="#fff" opacity=".8"/><rect x="55" y="68" width="40" height="46" rx="18" fill="#cfe3d8"/></svg>
       <span>Presyo kada kilo</span><b>₱<span id="price">…</span></b><span>Minimum na order: ½ kilo</span>
     </div>
   </div>
@@ -199,7 +201,7 @@ select{width:100%;font:inherit;padding:12px;border:1.5px solid var(--line);borde
 <footer>Mga tanong? I-message kami. Salamat sa pagsuporta sa lokal na mushroom.</footer>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbxAgaCF7icq6jt1LF6e7RZsGyT129kcE6DuvVeJBqtD-wFHklPJioC5Zy45qXQNdByQnA/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbw3TlslAhklhekHzfi7_pXxbv7NEU0XaiGfoN7Nx_mMSnD8pVo0AnPnXka22H2DsUjZ7A/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -312,6 +314,13 @@ async function loadFeed() {
   try {
     const r = await (await fetch(API_URL + '?action=feed')).json();
     if (!r.ok || !r.gallery) return;
+    if (r.video && /^[\w-]{11}$/.test(r.video)) {
+      const f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + r.video + '?rel=0&playsinline=1';
+      f.title = 'Video ng Sariwang Mushroom'; f.allowFullscreen = true; f.loading = 'lazy';
+      f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture';
+      $('heroVid').replaceChildren(f); $('heroVid').hidden = false; $('heroSvg').style.display = 'none';
+    }
     $('gal').textContent = ''; $('revs').textContent = '';
     r.gallery.forEach(g => item($('gal'), g.url, [[g.caption]]));
     $('galSec').hidden = !r.gallery.length;
