@@ -94,6 +94,19 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 .ph .pp{color:var(--o);font-size:1.5rem;font-weight:500}.ph small{color:var(--mute);display:block;font-size:.85rem;font-weight:400}
 #sx{position:absolute;right:0;top:0;border:0;background:none;font-size:1.8rem;line-height:1;color:var(--mute);cursor:pointer}
 .stick{position:sticky;bottom:0;background:#fff;padding:12px 0 14px}
+.pd{display:block}
+@media(min-width:900px){.app{max-width:1040px}.pd{display:grid;grid-template-columns:440px 1fr;align-items:start;background:#fff}.bar{max-width:1040px}}
+.media.img{background:#fff;padding:0;min-height:0}.mainimg{width:100%;aspect-ratio:1;object-fit:contain;display:block;background:#fff}
+.thumbs{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:#fff}
+.thumbs button{flex:0 0 64px;height:64px;padding:0;border:2px solid transparent;background:#fafafa;cursor:pointer}.thumbs button.on{border-color:var(--o)}.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:6px}
+.opt{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;padding:4px 10px 4px 4px;font:inherit;cursor:pointer;text-align:left;min-height:46px;color:var(--ink)}
+.opt img{width:38px;height:38px;object-fit:cover;flex:none;background:#eee}.opt.on{border-color:var(--o);color:var(--o);background:#fff3f0}
+.qrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}.qt{color:var(--o);font-size:1.25rem;font-weight:500;margin-left:auto}
+.acts{display:flex;gap:10px;margin-top:16px}.acts button{flex:1}
+.toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:rgba(0,0,0,.82);color:#fff;padding:10px 16px;border-radius:6px;z-index:60;font-size:.9rem}
+.cl{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.cl span{flex:1;overflow-wrap:anywhere}
+.cl button{width:32px;height:32px;border:1px solid #d6d6d6;background:#fff;border-radius:4px;cursor:pointer}.cl b{min-width:64px;text-align:right;font-weight:500}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -104,21 +117,27 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
   <form id="cf"><input id="cq" maxlength="500" placeholder="I-type ang tanong" aria-label="Tanong"><button id="cs">Ipadala</button></form>
 </div>
 <div class="app">
-<div class="media"><div class="vid" id="heroVid" hidden></div>
+<div class="pd"><div class="pl"><div class="media"><div class="vid" id="heroVid" hidden></div>
 <svg id="heroSvg" viewBox="0 0 240 190" aria-hidden="true">
         <ellipse cx="120" cy="175" rx="104" ry="9" fill="#12372a" opacity=".14"/>
         <g class="m m2"><path d="M45 148c0-12 3-24 5-38h18c-1 14 0 26 2 38z" fill="#f1e7d2" transform="translate(-4 24)"/><path d="M14 140C14 112 34 96 58 96s44 16 44 44c-22 8-66 8-88 0z" fill="#cdb48a"/><path d="M24 142c22 6 56 6 68 0" stroke="#b79d70" stroke-width="2" fill="none"/><circle cx="46" cy="112" r="5" fill="#efe3cc" opacity=".7"/></g>
         <g class="m m3"><path d="M168 136c0 14-1 24-2 36h24c-1-12-2-22-2-36z" fill="#f1e7d2"/><path d="M138 130C138 104 156 90 178 90s42 14 42 40c-20 8-62 8-82 0z" fill="#d6bf96"/><path d="M148 132c20 6 52 6 62 0" stroke="#bda57a" stroke-width="2" fill="none"/><circle cx="170" cy="105" r="5" fill="#efe3cc" opacity=".7"/></g>
         <g class="m m1"><path d="M104 108C104 134 100 156 98 172h44c-2-16-6-38-6-64z" fill="#f7f0e1"/><path d="M50 100C50 55 82 28 120 28s70 27 70 72c-40 12-100 12-140 0z" fill="#dcc7a0"/><path d="M62 103c38 12 78 12 116 0" stroke="#c2a97b" stroke-width="2.5" fill="none"/><circle cx="96" cy="56" r="8" fill="#efe3cc" opacity=".75"/><circle cx="140" cy="48" r="6" fill="#efe3cc" opacity=".75"/><circle cx="162" cy="74" r="7" fill="#efe3cc" opacity=".75"/></g>
       </svg>
+<img id="mainImg" class="mainimg" alt="Larawan ng produkto" hidden>
 </div>
+<div class="thumbs" id="thumbs" hidden></div></div><div class="pr">
 <div class="deal"><b>Sariwang Deal</b><span>GCash ang bayad</span></div>
 <div class="blk info">
   <div class="pricerow"><div class="price">₱<span class="pv">…</span><small>kada kilo</small></div><div class="stat" id="stat">Wala pang rating</div></div>
   <h1><span class="tag">Bagong pitas</span>Sariwang mushroom, diretso sa inyong bahay</h1>
   <p class="sub">Mag-order online, magbayad sa GCash, at subaybayan ang delivery gamit ang Order ID mo.</p>
+  <div id="optBox" hidden style="margin-top:16px"><label>Pumili ng uri: <span id="optName" style="font-weight:400;color:var(--mute)"></span></label><div class="opts" id="opts"></div></div>
+  <div class="qrow"><label style="margin:0">Dami</label><div class="step"><button type="button" id="kmi" aria-label="Bawasan ng ½ kilo">−</button><input id="kq" type="number" min="0.5" max="500" step="0.5" value="1" inputmode="decimal" aria-label="Kilo"><button type="button" id="kpl" aria-label="Dagdagan ng ½ kilo">+</button><span>kilo</span></div><b class="qt" id="qtot">₱0</b></div>
+  <div class="acts"><button type="button" class="again" id="addc">Add To Cart</button><button type="button" class="go" id="buyn">Buy Now</button></div>
 </div>
 <div class="blk rows"><div class="row">Minimum na order: ½ kilo</div><div class="row">GCash lang muna ang bayad</div><div class="row">May status update mula bayad hanggang delivery</div></div>
+</div></div>
 <div class="blk"><h2 style="margin-bottom:12px">Paano mag-order</h2>
   <ol class="how"><li>Pindutin ang "Mag-order" at ilagay ang pangalan, CP number, address at kilo.</li><li>Mag-send ng GCash sa nakasulat na number.</li><li>I-screenshot ang payment at ipadala sa Gmail.</li><li>Hintayin ang verification, tapos subaybayan ang order mo.</li></ol>
 </div>
@@ -163,7 +182,7 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 <nav class="bar" aria-label="Mabilis na aksyon">
   <button type="button" class="ib" id="chatbtn"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Chat Now</button>
   <a class="ib" href="#track"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>Subaybayan</a>
-  <button type="button" class="buy" data-open>Mag-order<small>₱<span class="pv">…</span> kada kilo</small></button>
+  <button type="button" class="buy" id="buyBar">Mag-order<small>₱<span class="pv">…</span> kada kilo</small></button>
 </nav>
 
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Mag-order">
@@ -176,10 +195,7 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
       </svg><div><div class="pp">₱<span class="pv">…</span><small>kada kilo, minimum ½ kilo</small></div></div><button type="button" id="sx" aria-label="Isara">×</button></div>
   <div id="oGrid">
     <form id="form" novalidate>
-      <div class="f"><label>Ilang kilo?</label>
-        <div class="chips"><button type="button" class="chip" data-k="0.5">½ kilo</button><button type="button" class="chip" data-k="1">1 kilo</button><button type="button" class="chip" data-k="2">2 kilo</button><button type="button" class="chip" data-k="5">5 kilo</button></div>
-        <div class="step"><button type="button" id="mi" aria-label="Bawasan ng ½ kilo">−</button><input id="kl" type="number" min="0.5" max="500" step="0.5" value="1" inputmode="decimal" aria-label="Kilo"><button type="button" id="pl" aria-label="Dagdagan ng ½ kilo">+</button><span>kilo</span></div>
-      </div>
+      <div class="f"><label>Mga item sa order</label><div id="cartL"></div></div>
       <div class="f"><label for="nm">Buong pangalan</label><input id="nm" maxlength="80" autocomplete="name" placeholder="Juan Dela Cruz"></div>
       <div class="f"><label for="cp">CP number</label><input id="cp" type="tel" maxlength="20" autocomplete="tel" placeholder="09171234567"></div>
       <div class="f"><label for="ad">Address ng delivery</label><textarea id="ad" maxlength="250" autocomplete="street-address" placeholder="Bahay/Unit, Kalye, Barangay, Lungsod"></textarea></div>
@@ -214,7 +230,7 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbyUU-CpU_dtc1MlGfsUJj2Od5_SQDvsltWUs8PmnasE8I3epGOmktpjapzty87q-_nFRw/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbzgEwgWOj341iKfdw-kUQHtPcwxd_UL5zSAYebkyzuz58cVAL1cUSU-wF-VJGqwauwv7w/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -223,7 +239,7 @@ const isMobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 function openMail(web) {
   if (!cur) return;
   const su = encodeURIComponent('GCash payment - ' + cur.id);
-  const body = encodeURIComponent('Order ID: ' + cur.id + '\nPangalan: ' + cur.name + '\nAddress: ' + cur.address + '\nKilo: ' + cur.kilo + '\nTotal: ₱' + cur.total + '\n\nNaka-attach ang screenshot ng GCash payment ko.');
+  const body = encodeURIComponent('Order ID: ' + cur.id + '\nPangalan: ' + cur.name + '\nAddress: ' + cur.address + '\nItems: ' + cur.items + '\nKilo: ' + cur.kilo + '\nTotal: ₱' + cur.total + '\n\nNaka-attach ang screenshot ng GCash payment ko.');
   mailOpened = true;
   if (web || !isMobile) window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + PAY_EMAIL + '&su=' + su + '&body=' + body, '_blank');
   else location.href = 'mailto:' + PAY_EMAIL + '?subject=' + su + '&body=' + body;
@@ -235,35 +251,104 @@ $('again2').onclick = e => { e.preventDefault(); openMail(false); };
 $('sentBtn').onclick = e => { e.preventDefault(); showReview(); };
 document.addEventListener('visibilitychange', () => { if (mailOpened && document.visibilityState === 'visible') showReview(); });
 const peso = n => '₱' + Number(n).toLocaleString('en-PH');
-const calc = () => { $('tot').textContent = peso((Number($('kl').value) || 0) * PRICE); document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', Number(c.dataset.k) === Number($('kl').value))); };
+let PRODS = [], MAIN = null, sel = 0, qty = 1, cart = [], VID = '', VERT = false;
+const unitPrice = n => { const p = PRODS.find(x => x.name === n); return p ? p.price : PRICE; };
+const img = u => { const d = String(u).match(/drive\.google\.com\/.*?(?:\/d\/|[?&]id=)([\w-]{20,})/); return d ? 'https://drive.google.com/thumbnail?id=' + d[1] + '&sz=w1000' : u; };
+function calc() {
+  const p = PRODS[sel], price = p ? p.price : PRICE;
+  document.querySelectorAll('.pv').forEach(e => e.textContent = price);
+  if (document.activeElement !== $('kq')) $('kq').value = qty;
+  $('qtot').textContent = peso(qty * price);
+  $('tot').textContent = peso(cart.reduce((a, l) => a + l.kilo * unitPrice(l.name), 0));
+}
+const box = () => document.querySelector('.media');
+function showMain(url) { $('heroVid').replaceChildren(); $('heroVid').hidden = true; $('heroSvg').style.display = 'none'; $('mainImg').src = img(url); $('mainImg').hidden = false; box().classList.add('img'); }
+function playVid() {
+  if (!VID) return; const f = document.createElement('iframe');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + VID + '?autoplay=1&mute=1&loop=1&playlist=' + VID + '&rel=0&playsinline=1';
+  f.title = 'Video ng Sariwang Mushroom'; f.allowFullscreen = true; f.allow = 'autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+  $('heroVid').classList.toggle('vert', VERT); $('heroVid').replaceChildren(f); $('heroVid').hidden = false; $('heroSvg').style.display = 'none'; $('mainImg').hidden = true; box().classList.remove('img');
+}
+function pick(i, quiet) {
+  sel = i; const p = PRODS[i];
+  document.querySelectorAll('.opt').forEach((o, j) => o.classList.toggle('on', j === i));
+  $('optName').textContent = p ? p.name : '';
+  if (p && p.kilo && !quiet) qty = p.kilo;
+  if (p && p.url && !quiet) showMain(p.url);
+  document.querySelectorAll('#thumbs button').forEach(x => x.classList.toggle('on', x.dataset.p === String(i)));
+  calc();
+}
+function drawShop(gallery) {
+  const o = $('opts'), t = $('thumbs'); o.textContent = ''; t.textContent = '';
+  PRODS.forEach((p, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+    if (p.url) { const im = document.createElement('img'); im.src = img(p.url); im.alt = ''; b.appendChild(im); }
+    b.append(p.name); b.onclick = () => pick(i); o.appendChild(b);
+  });
+  $('optBox').hidden = !PRODS.length;
+  const list = [];
+  if (VID) list.push({ v: 1, url: 'https://i.ytimg.com/vi/' + VID + '/default.jpg' });
+  if (MAIN && MAIN.url) list.push({ m: 1, url: MAIN.url });
+  PRODS.forEach((p, i) => list.push({ p: i, url: p.url }));
+  gallery.forEach(g => list.push({ url: g.url }));
+  list.forEach(e => {
+    if (!e.url || /youtu|#video|\.(mp4|webm)/i.test(e.url) && !e.v) return;
+    const b = document.createElement('button'); b.type = 'button'; const im = document.createElement('img'); im.src = img(e.url); im.alt = ''; b.appendChild(im);
+    if (e.p !== undefined) b.dataset.p = e.p;
+    b.onclick = () => { if (e.v) playVid(); else if (e.p !== undefined) pick(e.p); else showMain(e.url); t.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+    t.appendChild(b);
+  });
+  t.hidden = !t.children.length;
+  if (sel >= PRODS.length) sel = 0;
+  if (!VID && MAIN && MAIN.url) showMain(MAIN.url);
+  if (PRODS.length) pick(sel, true); else calc();
+}
+function toast(m) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
+function addCart(silent) {
+  const p = PRODS[sel], n = p ? p.name : '', l = cart.find(x => x.name === n);
+  if (l) l.kilo = Math.min(500, l.kilo + qty); else cart.push({ name: n, kilo: qty });
+  renderCart(); if (!silent) toast('Nadagdag sa cart (' + cart.length + ' item). Pindutin ang Mag-order para magbayad.');
+}
+function renderCart() {
+  const bx = $('cartL'); bx.textContent = '';
+  const mk = (t, fn) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = t; x.onclick = fn; return x; };
+  cart.forEach((l, i) => {
+    const r = document.createElement('div'); r.className = 'cl';
+    const n = document.createElement('span'); n.textContent = (l.name || 'Sariwang mushroom') + ' · ' + l.kilo + ' kilo';
+    const s = document.createElement('b'); s.textContent = peso(l.kilo * unitPrice(l.name));
+    r.append(n, mk('−', () => { l.kilo = Math.max(.5, l.kilo - .5); renderCart(); }), mk('+', () => { l.kilo = Math.min(500, l.kilo + .5); renderCart(); }), s, mk('×', () => { cart.splice(i, 1); renderCart(); }));
+    bx.appendChild(r);
+  });
+  calc();
+}
 
 fetch(API_URL + '?action=config').then(r => r.json()).then(c => {
   PRICE = c.price; STEPS = c.statuses; document.querySelectorAll('.pv').forEach(e => e.textContent = c.price); $('gno').textContent = c.gcashNo; $('gnm').textContent = c.gcashName; calc();
 }).catch(() => { $('err').textContent = 'Hindi ma-load ang presyo. I-refresh ang page.'; });
 
-function setK(v) { $('kl').value = Math.min(500, Math.max(.5, Math.round(v * 2) / 2)); calc(); }
-$('mi').onclick = () => setK((Number($('kl').value) || 1) - .5);
-$('pl').onclick = () => setK((Number($('kl').value) || 0) + .5);
-$('kl').addEventListener('input', calc);
+const setQ = v => { qty = Math.min(500, Math.max(.5, Math.round(v * 2) / 2)); calc(); };
+$('kmi').onclick = () => setQ(qty - .5);
+$('kpl').onclick = () => setQ(qty + .5);
+$('kq').addEventListener('input', () => { qty = Math.min(500, Math.max(.5, Number($('kq').value) || .5)); calc(); });
 
 $('form').addEventListener('submit', async ev => {
   ev.preventDefault(); const err = $('err'); err.textContent = '';
-  const d = { pangalan: $('nm').value.trim(), cp: $('cp').value.trim(), address: $('ad').value.trim(), kilo: Number($('kl').value) };
+  const d = { pangalan: $('nm').value.trim(), cp: $('cp').value.trim(), address: $('ad').value.trim(), items: cart };
   if (!d.pangalan) return err.textContent = 'Ilagay ang pangalan mo.';
   if (d.cp.replace(/\D/g, '').length < 10) return err.textContent = 'Ilagay ang tamang CP number (hal. 09171234567).';
   if (d.address.length < 10) return err.textContent = 'Ilagay ang kumpletong address.';
-  if (!(d.kilo >= .5 && d.kilo <= 500)) return err.textContent = 'Ilagay ang kilo, mula 0.5 hanggang 500.';
+  if (!cart.length) return err.textContent = 'Walang item sa order. Isara at pumili muna.';
   $('go').disabled = true; $('go').textContent = 'Sine-save ang order…';
   try {
     const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
     if (!r.ok) throw new Error(r.error);
-    cur = { id: r.id, name: d.pangalan, address: d.address, kilo: d.kilo, total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
+    cur = { id: r.id, name: d.pangalan, address: d.address, kilo: cart.reduce((a, l) => a + l.kilo, 0), items: cart.map(l => (l.name || 'Mushroom') + ' x ' + l.kilo + ' kilo').join(', '), total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
     $('oid').textContent = r.id; $('tid').value = r.id; $('tcp').value = d.cp; $('oGrid').classList.add('show-done');
     $('panel').scrollTop = 0;
   } catch (e) { err.textContent = 'Hindi na-save ang order: ' + e.message; }
   finally { $('go').disabled = false; $('go').textContent = 'I-submit ang order'; }
 });
-$('again').onclick = () => { $('oGrid').classList.remove('show-done'); ['nm', 'ad'].forEach(i => $(i).value = ''); cur = null; setK(1); };
+$('again').onclick = () => { $('oGrid').classList.remove('show-done'); ['nm', 'ad'].forEach(i => $(i).value = ''); cur = null; cart = []; renderCart(); };
 
 $('tf').addEventListener('submit', async ev => {
   ev.preventDefault(); const te = $('terr'); te.textContent = ''; $('tres').hidden = true;
@@ -327,16 +412,11 @@ async function loadFeed() {
   try {
     const r = await (await fetch(API_URL + '?action=feed')).json();
     if (!r.ok || !r.gallery) return;
-    if (r.video && /^[\w-]{11}$/.test(r.video)) {
-      const f = document.createElement('iframe');
-      f.src = 'https://www.youtube-nocookie.com/embed/' + r.video + '?autoplay=1&mute=1&loop=1&playlist=' + r.video + '&rel=0&playsinline=1';
-      f.title = 'Video ng Sariwang Mushroom'; f.allowFullscreen = true; 
-      f.allow = 'autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-      $('heroVid').classList.toggle('vert', !!r.vertical); $('heroVid').replaceChildren(f); $('heroVid').hidden = false; $('heroSvg').style.display = 'none';
-    }
+    if (r.video && /^[\w-]{11}$/.test(r.video)) { VID = r.video; VERT = !!r.vertical; playVid(); }
     $('gal').textContent = ''; $('revs').textContent = '';
     r.gallery.forEach(g => item($('gal'), g.url, [[g.caption]]));
     $('galSec').hidden = !r.gallery.length;
+    MAIN = (r.products || []).find(p => p.main); PRODS = (r.products || []).filter(p => !p.main); drawShop(r.gallery);
     r.reviews.forEach(v => item($('revs'), v.photo, [['★'.repeat(v.stars) + '☆'.repeat(5 - v.stars), 'stars'], [v.text], [v.name]]));
     if (r.count) { $('avg').textContent = 'Average: ' + r.average + ' sa 5, mula sa ' + r.count + ' rating.'; $('stat').textContent = '★ ' + r.average + ' | ' + r.count + ' rating'; }
   } catch (e) { console.error(e); }
@@ -375,11 +455,12 @@ $('qf').addEventListener('submit', async ev => {
 const sheet = $('sheet');
 const openS = () => { sheet.hidden = false; document.body.style.overflow = 'hidden'; };
 const closeS = () => { sheet.hidden = true; document.body.style.overflow = ''; };
-document.querySelectorAll('[data-open]').forEach(b => b.onclick = openS);
+$('buyn').onclick = () => { addCart(true); openS(); };
+$('addc').onclick = () => addCart();
+$('buyBar').onclick = () => { if (!cart.length) addCart(true); openS(); };
 $('sx').onclick = closeS;
 sheet.addEventListener('click', e => { if (e.target === sheet) closeS(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeS(); });
-document.querySelectorAll('.chip').forEach(c => c.onclick = () => setK(Number(c.dataset.k)));
 calc();
 </script>
 </body>
