@@ -102,8 +102,22 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 .opt img{width:38px;height:38px;object-fit:cover;flex:none;background:#eee}.opt.on{border-color:var(--o);color:var(--o);background:#fff3f0}
 .qrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}.qt{color:var(--o);font-size:1.25rem;font-weight:500;margin-left:auto}
 .acts{display:flex;gap:10px;margin-top:16px}.acts button{flex:1}
-.stk{background:#fff8e1;border-left:4px solid #f5a623;color:#7a4b00;padding:10px 14px;font-size:.92rem;line-height:1.4}
-.stk.out{background:#fdeaea;border-left-color:#d0021b;color:#a10015;font-weight:600}
+.stk{--c:#1b6b4a;--cb:#eef7f2;background:var(--cb);border:1px solid var(--c);border-left-width:6px;color:#1f2a24;padding:14px 16px;line-height:1.35}
+.stk.low{--c:#d97706;--cb:#fff7e6}.stk.out{--c:#d0021b;--cb:#fdeaea}
+.stk-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--c)}
+.stk-live{display:inline-flex;align-items:center;gap:6px}
+.stk-live i{width:9px;height:9px;border-radius:50%;background:var(--c);animation:stkp 1.6s ease-in-out infinite}
+@keyframes stkp{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 0 5px rgba(0,0,0,.08)}}
+.stk-pill{background:var(--c);color:#fff;border-radius:999px;padding:3px 10px;font-size:.72rem;letter-spacing:.03em}
+.stk-main{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:6px 0 2px}
+.stk-main b{font-size:2.3rem;line-height:1;font-weight:800;color:var(--c)}
+.stk-main span{font-size:1.05rem;font-weight:600}
+.stk.out .stk-main b{font-size:1.7rem}
+.stk-sub{font-size:.88rem;color:#4a4a4a}
+.stk-bar{height:8px;border-radius:99px;background:rgba(0,0,0,.09);overflow:hidden;margin:10px 0 8px}
+.stk-bar i{display:block;height:100%;background:var(--c);border-radius:99px;transition:width .6s ease}
+.stk-foot{font-size:.8rem;color:#666}
+@media (prefers-reduced-motion:reduce){.stk-live i{animation:none}.stk-bar i{transition:none}}
 #sheet .stk{margin-bottom:12px}
 .go:disabled,.again:disabled,.buy:disabled,.pk button:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.6)}
 .toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:rgba(0,0,0,.82);color:#fff;padding:10px 16px;border-radius:6px;z-index:60;font-size:.9rem}
@@ -521,9 +535,33 @@ function fitCart() {
   }
   return changed;
 }
+function stockDate() {
+  try { return new Date(STOCK.date + 'T00:00:00+08:00').toLocaleDateString('fil-PH', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'Asia/Manila' }); }
+  catch (e) { return STOCK.date || ''; }
+}
+function renderStock(e) {
+  e.textContent = '';
+  if (!STOCK.limited) { e.hidden = true; return; }
+  const out = !!STOCK.soldOut, left = STOCK.left, tot = STOCK.harvest || 0;
+  const pct = tot > 0 ? Math.max(0, Math.min(100, Math.round(left / tot * 100))) : 0;
+  const low = !out && (left <= 2 || pct <= 25);
+  e.hidden = false;
+  e.className = 'stk' + (out ? ' out' : low ? ' low' : '');
+  const mk = (tag, cls, txt) => { const x = document.createElement(tag); if (cls) x.className = cls; if (txt !== undefined) x.textContent = txt; return x; };
+  const h = mk('div', 'stk-h'), live = mk('span', 'stk-live'); live.append(mk('i'), 'Harvest ngayong araw · ' + stockDate());
+  h.append(live, mk('span', 'stk-pill', out ? 'Sold out' : low ? 'Konti na lang!' : 'May stock'));
+  const main = mk('div', 'stk-main');
+  if (out) main.append(mk('b', '', 'SOLD OUT NA'));
+  else { const g = left < 1; main.append(mk('b', '', g ? Math.round(left * 1000) : left), mk('span', '', g ? 'gramo na lang ang available' : 'kilo ang available ngayon')); }
+  e.append(h, main);
+  if (out) e.append(mk('div', 'stk-sub', 'Naubos na ang ' + kl(tot) + ' na harvest ngayong araw. Salamat sa suporta! Mag-order ulit bukas, o i-message si Sir Joel.'));
+  else {
+    const bar = mk('div', 'stk-bar'), fill = mk('i'); fill.style.width = pct + '%'; bar.appendChild(fill);
+    e.append(mk('div', 'stk-sub', 'Mula sa ' + kl(tot) + ' na bagong harvest ngayong araw.'), bar, mk('div', 'stk-foot', 'Unahan sa order. Kapag naubos, sold out na.'));
+  }
+}
 function applyStock() {
-  const t = stockText();
-  ['stk', 'stk2'].forEach(id => { const e = $(id); e.hidden = !t; e.textContent = t; e.classList.toggle('out', !!(STOCK.limited && STOCK.soldOut)); });
+  ['stk', 'stk2'].forEach(id => renderStock($(id)));
   if (PKGS.length) drawPkgs();
   else if (STOCK.limited && fitCart()) { renderCart(); toast('Inayos ang cart mo ayon sa natitirang stock.'); }
   calc();
