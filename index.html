@@ -231,6 +231,7 @@ footer a{color:var(--gc)}
       <div class="f"><label>Mga item sa order</label><div id="cartL"></div></div>
       <div class="f"><label for="nm">Buong pangalan</label><input id="nm" maxlength="80" autocomplete="name" placeholder="Juan Dela Cruz"></div>
       <div class="f"><label for="cp">CP number</label><input id="cp" type="tel" maxlength="20" autocomplete="tel" placeholder="09171234567"></div>
+      <div class="f"><label for="em">Email mo (optional)</label><input id="em" type="email" maxlength="120" autocomplete="email" placeholder="juan@gmail.com"><p class="hint">Dito ka namin ma-aabisuhan kapag natanggap na ang bayad. Mas mainam kung ito rin ang Gmail na gagamitin mo sa pagpapadala ng screenshot.</p></div>
       <div class="f"><label for="ad">Address ng delivery</label><textarea id="ad" maxlength="250" autocomplete="street-address" placeholder="Bahay/Unit, Kalye, Barangay, Lungsod"></textarea></div>
       <div class="pay">
         <label style="margin:0">Magbayad sa GCash</label>
@@ -279,7 +280,7 @@ footer a{color:var(--gc)}
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbzqFvNMRf3grr5DNPPjNx4H59Cu0pZBUXEKiANgmMZNZg8vTn2xLOm6eUs4lV1Mv81nJg/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbyw46JMe3_ReSLblcDRtKcgNJp3VfsjfkZfTN-aCsdQjL20X_loDtaCckM0zVLBJu_M_w/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [], TIERS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -288,7 +289,7 @@ const isMobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 function openMail(web) {
   if (!cur) return;
   const su = encodeURIComponent('GCash payment - ' + cur.id);
-  const body = encodeURIComponent('Order ID: ' + cur.id + '\nPangalan: ' + cur.name + '\nAddress: ' + cur.address + '\nItems: ' + cur.items + '\nKilo: ' + cur.kilo + '\nTotal: ₱' + cur.total + '\n\nNaka-attach ang screenshot ng GCash payment ko.');
+  const body = encodeURIComponent('Order ID: ' + cur.id + '\nPangalan: ' + cur.name + '\nCP: ' + cur.cp + '\nAddress: ' + cur.address + '\nItems: ' + cur.items + '\nKilo: ' + cur.kilo + '\nTotal: ₱' + cur.total + '\n\nNaka-attach ang screenshot ng GCash payment ko.');
   mailOpened = true;
   if (web || !isMobile) window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + PAY_EMAIL + '&su=' + su + '&body=' + body, '_blank');
   else location.href = 'mailto:' + PAY_EMAIL + '?subject=' + su + '&body=' + body;
@@ -478,23 +479,24 @@ $('kq').addEventListener('change', calc);
 
 $('form').addEventListener('submit', async ev => {
   ev.preventDefault(); const err = $('err'); err.textContent = '';
-  const d = { pangalan: $('nm').value.trim(), cp: $('cp').value.trim(), address: $('ad').value.trim(), items: cart };
+  const d = { pangalan: $('nm').value.trim(), cp: $('cp').value.trim(), address: $('ad').value.trim(), email: $('em').value.trim(), items: cart };
   if (!d.pangalan) return err.textContent = 'Ilagay ang pangalan mo.';
   if (d.cp.replace(/\D/g, '').length < 10) return err.textContent = 'Ilagay ang tamang CP number (hal. 09171234567).';
   if (d.address.length < 10) return err.textContent = 'Ilagay ang kumpletong address.';
+  if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return err.textContent = 'Mali ang email. Iwanang blangko kung ayaw ilagay.';
   if (!cart.length) return err.textContent = 'Walang item sa order. Isara at pumili muna.';
   $('go').disabled = true; $('go').textContent = 'Sine-save ang order…';
   try {
     const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
     if (!r.ok) throw new Error(r.error);
-    cur = { id: r.id, name: d.pangalan, address: d.address, kilo: cart.reduce((a, l) => a + lineKilo(l), 0), items: cart.map(l => l.pkg ? ((PK(l.pkg) || {}).name || 'Package') + ' (' + ((PK(l.pkg) || {}).contents || '') + ') x ' + l.qty : (l.name || 'Mushroom') + ' x ' + l.kilo + ' kilo').join(', '), total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
+    cur = { id: r.id, name: d.pangalan, cp: d.cp, email: d.email, address: d.address, kilo: cart.reduce((a, l) => a + lineKilo(l), 0), items: cart.map(l => l.pkg ? ((PK(l.pkg) || {}).name || 'Package') + ' (' + ((PK(l.pkg) || {}).contents || '') + ') x ' + l.qty : (l.name || 'Mushroom') + ' x ' + l.kilo + ' kilo').join(', '), total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
     fillSummary(cart.map(l => ({ ...l })), d, r.total); cart = []; renderCart();
     $('oid').textContent = r.id; $('tid').value = r.id; $('tcp').value = d.cp; $('oGrid').classList.add('show-done');
     $('panel').scrollTop = 0;
   } catch (e) { err.textContent = 'Hindi na-save ang order: ' + e.message; }
   finally { $('go').disabled = false; $('go').textContent = 'I-submit ang order'; }
 });
-$('again').onclick = () => { $('oGrid').classList.remove('show-done'); ['nm', 'ad'].forEach(i => $(i).value = ''); cur = null; cart = []; renderCart(); };
+$('again').onclick = () => { $('oGrid').classList.remove('show-done'); ['nm', 'ad', 'em'].forEach(i => $(i).value = ''); cur = null; cart = []; renderCart(); };
 
 $('tf').addEventListener('submit', async ev => {
   ev.preventDefault(); const te = $('terr'); te.textContent = ''; $('tres').hidden = true;
