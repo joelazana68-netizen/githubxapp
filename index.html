@@ -102,6 +102,10 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 .opt img{width:38px;height:38px;object-fit:cover;flex:none;background:#eee}.opt.on{border-color:var(--o);color:var(--o);background:#fff3f0}
 .qrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}.qt{color:var(--o);font-size:1.25rem;font-weight:500;margin-left:auto}
 .acts{display:flex;gap:10px;margin-top:16px}.acts button{flex:1}
+.stk{background:#fff8e1;border-left:4px solid #f5a623;color:#7a4b00;padding:10px 14px;font-size:.92rem;line-height:1.4}
+.stk.out{background:#fdeaea;border-left-color:#d0021b;color:#a10015;font-weight:600}
+#sheet .stk{margin-bottom:12px}
+.go:disabled,.again:disabled,.buy:disabled,.pk button:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.6)}
 .toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:rgba(0,0,0,.82);color:#fff;padding:10px 16px;border-radius:6px;z-index:60;font-size:.9rem}
 .opt .ot{display:flex;flex-direction:column;line-height:1.25}.opt .ot small{color:var(--mute);font-size:.78rem}.opt.on .ot small{color:var(--o)}
 .bd{font-style:normal;background:var(--o);color:#fff;font-size:.66rem;padding:0 5px;border-radius:3px;margin-left:4px;vertical-align:1px;white-space:nowrap}
@@ -154,6 +158,7 @@ footer a{color:var(--gc)}
 </div>
 <div class="thumbs" id="thumbs" hidden></div></div><div class="pr">
 <div class="deal"><b>Sariwang Deal</b><span id="dealtxt">GCash ang bayad</span></div>
+<div class="stk" id="stk" hidden></div>
 <div class="blk info">
   <div class="pricerow"><div class="price">₱<span class="pv">…</span><small>kada kilo <s id="pold"></s></small><span class="off" id="poff" hidden></span></div><div class="stat" id="stat">Wala pang rating</div></div>
   <h1><span class="tag">Bagong pitas</span>Sariwang mushroom, diretso sa inyong bahay</h1>
@@ -228,6 +233,7 @@ footer a{color:var(--gc)}
 </svg><div><div class="pp">₱<span id="cv">…</span><small>kada kilo, minimum 250 gramo</small></div></div><button type="button" id="sx" aria-label="Isara">×</button></div>
   <div id="oGrid">
     <form id="form" novalidate>
+      <div class="stk" id="stk2" hidden></div>
       <div class="f"><label>Mga item sa order</label><div id="cartL"></div></div>
       <div class="f"><label for="nm">Buong pangalan</label><input id="nm" maxlength="80" autocomplete="name" placeholder="Juan Dela Cruz"></div>
       <div class="f"><label for="cp">CP number</label><input id="cp" type="tel" maxlength="20" autocomplete="tel" placeholder="09171234567"></div>
@@ -280,7 +286,7 @@ footer a{color:var(--gc)}
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbyw46JMe3_ReSLblcDRtKcgNJp3VfsjfkZfTN-aCsdQjL20X_loDtaCckM0zVLBJu_M_w/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbygMIuAlYt3cAuQXsYd8_uCWQ4dN6H4Alr-z4_pk6tBNhRpYOWzFYWocjyj44H2weVNHg/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [], TIERS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -301,7 +307,7 @@ $('again2').onclick = e => { e.preventDefault(); openMail(false); };
 $('sentBtn').onclick = e => { e.preventDefault(); showReview(); };
 document.addEventListener('visibilitychange', () => { if (mailOpened && document.visibilityState === 'visible') showReview(); });
 const peso = n => '₱' + Number(n).toLocaleString('en-PH');
-let PKGS = [], GAL = [], PRODS = [], MAIN = null, sel = 0, qty = 1, drawn = false, cart = [], VID = '', VERT = false;
+let STOCK = { limited: false }, PKGS = [], GAL = [], PRODS = [], MAIN = null, sel = 0, qty = 1, drawn = false, cart = [], VID = '', VERT = false;
 const rate = k => PRICE - (TIERS.filter(t => k >= t.min).pop() || { off: 0 }).off;
 const PK = id => PKGS.find(p => p.id === id);
 const isLoose = l => !l.pkg;
@@ -324,6 +330,7 @@ function nudge(el, k) {
 }
 const img = u => { const d = String(u).match(/drive\.google\.com\/.*?(?:\/d\/|[?&]id=)([\w-]{20,})/); return d ? 'https://drive.google.com/thumbnail?id=' + d[1] + '&sz=w1000' : u; };
 function calc() {
+  if (STOCK.limited && qty > maxQ()) qty = maxQ();
   const r = rate(qty), ck = looseKilo(cart);
   document.querySelectorAll('.pv').forEach(e => e.textContent = r);
   $('pold').textContent = r < PRICE ? '₱' + PRICE : '';
@@ -340,6 +347,11 @@ function calc() {
   if (cart.length) { $('bb1').textContent = 'Mag-order (' + cart.length + ' item)'; $('bb2').textContent = 'Kabuuan ' + peso(orderTotal(cart)); }
   else { $('bb1').textContent = 'Mag-order'; $('bb2').textContent = '₱' + r + ' kada kilo'; }
   if (!flashing) $('addc').textContent = cart.length ? 'Add To Cart (' + cart.length + ')' : 'Add To Cart';
+  const so = STOCK.limited && STOCK.soldOut;
+  if (!flashing) $('addc').disabled = so;
+  $('buyn').disabled = so; $('buyBar').disabled = so;
+  if (so) { $('bb1').textContent = 'SOLD OUT ngayon'; $('bb2').textContent = 'Mag-order bukas'; }
+  $('kq').max = String(maxQ());
 }
 const box = () => document.querySelector('.media');
 function showMain(url) { $('heroVid').replaceChildren(); $('heroVid').hidden = true; $('heroSvg').style.display = 'none'; $('mainImg').src = img(url); $('mainImg').hidden = false; box().classList.add('img'); }
@@ -398,12 +410,22 @@ let flashing = false;
 function flash() { const b = $('addc'); flashing = true; b.textContent = '✓ Nadagdag!'; b.disabled = true; setTimeout(() => { flashing = false; b.disabled = false; calc(); }, 900); }
 const cartMsg = () => cart.length + ' item sa cart · ' + peso(orderTotal(cart));
 function addCart(silent) {
+  let add = qty, clamped = false;
+  if (STOCK.limited) {
+    const room = roomLeft();
+    if (room < .25) { stockToast(); return false; }
+    if (add > room) { add = room; clamped = true; }
+  }
   const p = PRODS[sel], n = p ? p.name : '', l = cart.find(x => x.name === n);
-  if (l) l.kilo = Math.min(500, l.kilo + qty); else cart.push({ name: n, kilo: qty });
+  if (l) l.kilo = Math.min(500, l.kilo + add); else cart.push({ name: n, kilo: add });
   renderCart();
-  if (!silent) { flash(); toast('Nadagdag: ' + kl(qty) + (n && !/kilo|gramo/i.test(n) ? ' ' + n : '') + ' · ' + cartMsg(), { t: 'Tingnan', f: openS }); }
+  if (!silent) { flash(); toast('Nadagdag: ' + kl(add) + (n && !/kilo|gramo/i.test(n) ? ' ' + n : '') + ' · ' + cartMsg() + (clamped ? ' (hanggang dito na lang ang stock)' : ''), { t: 'Tingnan', f: openS }); }
+  else if (clamped) toast('Hanggang ' + kl(add) + ' na lang ang natitira ngayong araw, ito ang inilagay sa cart.');
+  return true;
 }
 function addPkg(id) {
+  const pk0 = PK(id);
+  if (STOCK.limited && pk0 && pk0.kilo > roomLeft() + 1e-9) { stockToast(); return false; }
   const l = cart.find(x => x.pkg === id); if (l) l.qty = Math.min(50, l.qty + 1); else cart.push({ pkg: id, qty: 1 });
   renderCart(); toast('Nadagdag: ' + ((PK(id) || {}).name || 'Package') + ' · ' + cartMsg(), { t: 'Tingnan', f: openS });
 }
@@ -420,10 +442,12 @@ function drawPkgs() {
     const sg = document.createElement('div'); sg.className = 'sv'; sg.textContent = sv > 0 ? 'Tipid ₱' + sv + ' (-' + Math.round(sv / reg * 100) + '%) · ₱' + Math.round(p.price / p.kilo) + ' kada kilo' : '';
     body.append(h, ct, pr, sg);
     const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Idagdag sa cart'; b.onclick = () => addPkg(p.id);
+    if (STOCK.limited && p.kilo > STOCK.left + 1e-9) { b.disabled = true; b.textContent = STOCK.soldOut ? 'Sold out' : 'Kulang ang stock'; }
     if (sv > 0) { const rb = document.createElement('span'); rb.className = 'rib'; rb.textContent = '-' + Math.round(sv / reg * 100) + '%'; c.append(rb); }
     c.append(im, body, b); bx.appendChild(c);
   });
   $('pkgBox').hidden = !PKGS.length;
+  if (STOCK.limited && fitCart()) { renderCart(); toast('Inayos ang cart mo ayon sa natitirang stock.'); }
 }
 function renderCart() {
   const bx = $('cartL'); bx.textContent = '';
@@ -438,12 +462,12 @@ function renderCart() {
     if (l.pkg) {
       const p = PK(l.pkg) || { name: 'Package', price: 0, kilo: 0, contents: '', url: '' };
       th.src = p.url ? img(p.url) : ph(p.kilo, p.name); t1.textContent = p.name + ' × ' + l.qty; t2.textContent = p.contents; s.textContent = peso(l.qty * p.price);
-      r.append(th, n, mk('−', () => { l.qty = Math.max(1, l.qty - 1); renderCart(); }), mk('+', () => { l.qty = Math.min(50, l.qty + 1); renderCart(); }), s, mk('×', () => { cart.splice(i, 1); renderCart(); }));
+      r.append(th, n, mk('−', () => { l.qty = Math.max(1, l.qty - 1); renderCart(); }), mk('+', () => { if (STOCK.limited && p.kilo > roomLeft() + 1e-9) return stockToast(); l.qty = Math.min(50, l.qty + 1); renderCart(); }), s, mk('×', () => { cart.splice(i, 1); renderCart(); }));
     } else {
       const p = PRODS.find(x => x.name === l.name);
       th.src = p && p.url ? img(p.url) : ph(l.kilo);
       t1.textContent = /kilo|gramo/i.test(l.name || '') ? kl(l.kilo) : (l.name || 'Sariwang mushroom') + ' · ' + kl(l.kilo); t2.textContent = '₱' + cr + ' kada kilo'; s.textContent = peso(Math.round(l.kilo * cr));
-      r.append(th, n, mk('−', () => { l.kilo = Math.max(.25, l.kilo - stepDn(l.kilo)); renderCart(); }), mk('+', () => { l.kilo = Math.min(500, l.kilo + stepUp(l.kilo)); renderCart(); }), s, mk('×', () => { cart.splice(i, 1); renderCart(); }));
+      r.append(th, n, mk('−', () => { l.kilo = Math.max(.25, l.kilo - stepDn(l.kilo)); renderCart(); }), mk('+', () => { const st = stepUp(l.kilo); if (STOCK.limited && st > roomLeft() + 1e-9) return stockToast(); l.kilo = Math.min(500, l.kilo + st); renderCart(); }), s, mk('×', () => { cart.splice(i, 1); renderCart(); }));
     }
     bx.appendChild(r);
   });
@@ -467,14 +491,57 @@ function fillSummary(ls, d, total) {
   const q = document.querySelector('.pay .qr'); if (q) $('sumQr').src = q.src;
 }
 
+// ===== Stock ng araw: ipinapakita sa customer kung ilang kilo na lang ang available =====
+function cartKilo(ls) { return ls.reduce((a, l) => a + lineKilo(l), 0); }
+function roomLeft() { return STOCK.limited ? Math.floor((STOCK.left - cartKilo(cart)) * 4 + 1e-9) / 4 : Infinity; }
+function maxQ() { return STOCK.limited ? Math.max(.25, Math.min(500, roomLeft())) : 500; }
+function stockText() {
+  if (!STOCK.limited) return '';
+  if (STOCK.soldOut) return '😔 SOLD OUT na ang harvest ngayong araw. Salamat sa suporta! Mag-order ulit bukas, o i-message si Sir Joel.';
+  return '🍄 Limitado ngayong araw (harvest: ' + kl(STOCK.harvest) + '): ' + kl(STOCK.left) + ' na lang ang available' + (STOCK.left <= 2 ? ' · Konti na lang!' : '') + '. Kapag naubos, sold out na.';
+}
+function stockToast() {
+  toast(STOCK.soldOut ? 'Sold out na ang harvest ngayong araw.' : 'Hanggang ' + kl(Math.max(0, roomLeft())) + ' na lang ang puwede pang idagdag (limitado ang stock ngayong araw).');
+}
+// Kung sobra ang cart sa natitirang stock, babawasan mula sa huling item
+function fitCart() {
+  if (!STOCK.limited) return false;
+  let over = cartKilo(cart) - STOCK.left, changed = false;
+  for (let i = cart.length - 1; i >= 0 && over > 1e-9; i--) {
+    const l = cart[i];
+    if (l.pkg) {
+      const k = (PK(l.pkg) || {}).kilo; if (!k) continue;
+      while (l.qty > 0 && over > 1e-9) { l.qty--; over -= k; changed = true; }
+      if (l.qty <= 0) cart.splice(i, 1);
+    } else {
+      const cut = Math.min(l.kilo, Math.ceil(over * 4 - 1e-9) / 4);
+      l.kilo = Math.round((l.kilo - cut) * 4) / 4; over -= cut; changed = true;
+      if (l.kilo < .25) cart.splice(i, 1);
+    }
+  }
+  return changed;
+}
+function applyStock() {
+  const t = stockText();
+  ['stk', 'stk2'].forEach(id => { const e = $(id); e.hidden = !t; e.textContent = t; e.classList.toggle('out', !!(STOCK.limited && STOCK.soldOut)); });
+  if (PKGS.length) drawPkgs();
+  else if (STOCK.limited && fitCart()) { renderCart(); toast('Inayos ang cart mo ayon sa natitirang stock.'); }
+  calc();
+}
+function loadStock() {
+  return fetch(API_URL + '?action=stock').then(r => r.json()).then(r => { if (r && r.stock) { STOCK = r.stock; applyStock(); } }).catch(() => {});
+}
+setInterval(loadStock, 60000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') loadStock(); });
+
 fetch(API_URL + '?action=config').then(r => r.json()).then(c => {
-  PRICE = c.price; TIERS = c.tiers || []; STEPS = c.statuses; if (PRODS.length) drawShop(GAL); $('gno').textContent = c.gcashNo; $('gnm').textContent = c.gcashName; calc();
+  PRICE = c.price; TIERS = c.tiers || []; STEPS = c.statuses; if (PRODS.length) drawShop(GAL); $('gno').textContent = c.gcashNo; $('gnm').textContent = c.gcashName; calc(); STOCK = c.stock || { limited: false }; applyStock();
 }).catch(() => { $('err').textContent = 'Hindi ma-load ang presyo. I-refresh ang page.'; });
 
-const setQ = v => { qty = Math.min(500, Math.max(.25, Math.round(v * 4) / 4)); calc(); };
+const setQ = v => { if (STOCK.limited && v > maxQ() + 1e-9) toast('Hanggang ' + kl(maxQ()) + ' na lang ang natitira ngayong araw.'); qty = Math.min(maxQ(), Math.max(.25, Math.round(v * 4) / 4)); calc(); };
 $('kmi').onclick = () => setQ(qty - stepDn(qty));
 $('kpl').onclick = () => setQ(qty + stepUp(qty));
-$('kq').addEventListener('input', () => { qty = Math.min(500, Math.max(.25, Math.round((Number($('kq').value) || .25) * 4) / 4)); calc(); });
+$('kq').addEventListener('input', () => { qty = Math.min(maxQ(), Math.max(.25, Math.round((Number($('kq').value) || .25) * 4) / 4)); calc(); });
 $('kq').addEventListener('change', calc);
 
 $('form').addEventListener('submit', async ev => {
@@ -485,14 +552,16 @@ $('form').addEventListener('submit', async ev => {
   if (d.address.length < 10) return err.textContent = 'Ilagay ang kumpletong address.';
   if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return err.textContent = 'Mali ang email. Iwanang blangko kung ayaw ilagay.';
   if (!cart.length) return err.textContent = 'Walang item sa order. Isara at pumili muna.';
+  if (STOCK.limited && (STOCK.soldOut || cartKilo(cart) > STOCK.left + 1e-9)) { await loadStock(); return err.textContent = STOCK.soldOut ? 'Sold out na ang harvest ngayong araw.' : 'Kulang na ang stock. Hanggang ' + kl(STOCK.left) + ' na lang, inayos na namin ang cart mo.'; }
   $('go').disabled = true; $('go').textContent = 'Sine-save ang order…';
   try {
     const r = await (await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) })).json();
-    if (!r.ok) throw new Error(r.error);
+    if (!r.ok) { if (r.stock) { STOCK = r.stock; applyStock(); } throw new Error(r.error); }
     cur = { id: r.id, name: d.pangalan, cp: d.cp, email: d.email, address: d.address, kilo: cart.reduce((a, l) => a + lineKilo(l), 0), items: cart.map(l => l.pkg ? ((PK(l.pkg) || {}).name || 'Package') + ' (' + ((PK(l.pkg) || {}).contents || '') + ') x ' + l.qty : (l.name || 'Mushroom') + ' x ' + l.kilo + ' kilo').join(', '), total: r.total }; mailOpened = false; $('review').hidden = true; $('sendBox').hidden = false;
     fillSummary(cart.map(l => ({ ...l })), d, r.total); cart = []; renderCart();
     $('oid').textContent = r.id; $('tid').value = r.id; $('tcp').value = d.cp; $('oGrid').classList.add('show-done');
     $('panel').scrollTop = 0;
+    if (r.stock) { STOCK = r.stock; applyStock(); }
   } catch (e) { err.textContent = 'Hindi na-save ang order: ' + e.message; }
   finally { $('go').disabled = false; $('go').textContent = 'I-submit ang order'; }
 });
@@ -602,11 +671,11 @@ $('qf').addEventListener('submit', async ev => {
 });
 
 const sheet = $('sheet');
-const openS = () => { sheet.hidden = false; document.body.style.overflow = 'hidden'; };
+const openS = () => { loadStock(); sheet.hidden = false; document.body.style.overflow = 'hidden'; };
 const closeS = () => { sheet.hidden = true; document.body.style.overflow = ''; };
-$('buyn').onclick = () => { addCart(true); openS(); };
+$('buyn').onclick = () => { if (addCart(true) !== false) openS(); };
 $('addc').onclick = () => addCart();
-$('buyBar').onclick = () => { if (!cart.length) addCart(true); openS(); };
+$('buyBar').onclick = () => { if (!cart.length && addCart(true) === false) return; openS(); };
 $('sx').onclick = closeS;
 sheet.addEventListener('click', e => { if (e.target === sheet) closeS(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeS(); });
