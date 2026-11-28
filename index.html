@@ -107,6 +107,8 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 .bd{font-style:normal;background:var(--o);color:#fff;font-size:.66rem;padding:0 5px;border-radius:3px;margin-left:4px;vertical-align:1px;white-space:nowrap}
 .nudge{background:var(--soft);border:1px dashed #9cc9b0;color:var(--g);padding:8px 10px;border-radius:6px;font-size:.88rem;margin:10px 0 0}
 .price small s{margin-left:4px}
+.off{display:inline-block;background:#fff0ee;color:var(--o);border:1px solid var(--o);font-size:.8rem;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:8px;vertical-align:4px}
+.pk{position:relative}.pk .rib{position:absolute;top:0;right:0;background:#ffd424;color:var(--o);font-weight:700;font-size:.85rem;padding:3px 8px;border-radius:0 8px 0 8px}
 .sum{text-align:left;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0}
 .sum h4{margin:0 0 8px;font-size:1.05rem;font-weight:500}
 .sum .sl{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}.sum .sl b{font-weight:500;white-space:nowrap}
@@ -145,9 +147,9 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 <img id="mainImg" class="mainimg" alt="Larawan ng produkto" hidden>
 </div>
 <div class="thumbs" id="thumbs" hidden></div></div><div class="pr">
-<div class="deal"><b>Sariwang Deal</b><span>GCash ang bayad</span></div>
+<div class="deal"><b>Sariwang Deal</b><span id="dealtxt">GCash ang bayad</span></div>
 <div class="blk info">
-  <div class="pricerow"><div class="price">₱<span class="pv">…</span><small>kada kilo <s id="pold"></s></small></div><div class="stat" id="stat">Wala pang rating</div></div>
+  <div class="pricerow"><div class="price">₱<span class="pv">…</span><small>kada kilo <s id="pold"></s></small><span class="off" id="poff" hidden></span></div><div class="stat" id="stat">Wala pang rating</div></div>
   <h1><span class="tag">Bagong pitas</span>Sariwang mushroom, diretso sa inyong bahay</h1>
   <p class="sub">Mag-order online, magbayad sa GCash, at subaybayan ang delivery gamit ang Order ID mo.</p>
   <div id="optBox" hidden style="margin-top:16px"><label>Pumili ng uri: <span id="optName" style="font-weight:400;color:var(--mute)"></span></label><div class="opts" id="opts"></div></div>
@@ -266,7 +268,7 @@ footer{padding:24px 16px;text-align:center;color:var(--mute);font-size:.88rem}
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbxQxoDypzBM-D7cgas9uKiB1XUyVPcvlfJJ7r05PV9UBX0mlpZJL6s1-mgXs5KVdz0Skw/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbzqFvNMRf3grr5DNPPjNx4H59Cu0pZBUXEKiANgmMZNZg8vTn2xLOm6eUs4lV1Mv81nJg/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [], TIERS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -313,6 +315,11 @@ function calc() {
   const r = rate(qty), ck = looseKilo(cart);
   document.querySelectorAll('.pv').forEach(e => e.textContent = r);
   $('pold').textContent = r < PRICE ? '₱' + PRICE : '';
+  if (PRICE > 0) {
+    const pc = Math.round((PRICE - r) / PRICE * 100); $('poff').textContent = '-' + pc + '%'; $('poff').hidden = !(pc > 0);
+    const mx = Math.max(0, ...TIERS.map(t => t.off / PRICE * 100), ...PKGS.map(p => (1 - p.price / (p.kilo * PRICE)) * 100));
+    $('dealtxt').textContent = mx >= 1 ? 'Hanggang ' + Math.round(mx) + '% OFF · GCash ang bayad' : 'GCash ang bayad';
+  }
   if (document.activeElement !== $('kq')) $('kq').value = qty;
   $('qtot').textContent = peso(Math.round(qty * r));
   $('tot').textContent = peso(orderTotal(cart));
@@ -347,7 +354,7 @@ function drawShop(gallery) {
     { const im = document.createElement('img'); im.src = p.url ? img(p.url) : ph(p.kilo); im.alt = ''; b.appendChild(im); }
     const tt = Math.round(p.kilo * rate(p.kilo)), sv = Math.round(p.kilo * PRICE) - tt, ot = document.createElement('span'); ot.className = 'ot';
     const nm = document.createElement('span'); nm.textContent = p.name; if (BADGE[p.kilo]) { const bd = document.createElement('em'); bd.className = 'bd'; bd.textContent = BADGE[p.kilo]; nm.append(bd); }
-    const sm = document.createElement('small'); sm.textContent = p.kilo ? '₱' + tt + (sv > 0 ? ' · tipid ₱' + sv : '') : '';
+    const sm = document.createElement('small'); sm.textContent = p.kilo ? '₱' + tt + (sv > 0 ? ' · -' + Math.round(sv / (p.kilo * PRICE) * 100) + '%' : '') : '';
     ot.append(nm, sm); b.append(ot); b.onclick = () => pick(i); o.appendChild(b);
   });
   $('optBox').hidden = !PRODS.length;
@@ -395,12 +402,13 @@ function drawPkgs() {
     const im = document.createElement('img'); im.className = 'pi'; im.alt = p.name; im.src = p.url ? img(p.url) : ph(p.kilo, p.name);
     im.onerror = () => { im.onerror = null; im.src = ph(p.kilo, p.name); };
     const body = document.createElement('div'); body.className = 'pb';
-    const h = document.createElement('h3'); h.textContent = p.name; if (/libre/i.test(p.contents)) { const e = document.createElement('em'); e.className = 'bd'; e.textContent = 'May libre'; h.append(e); }
+    const h = document.createElement('h3'); h.textContent = p.name; if (/libre|free/i.test(p.contents)) { const e = document.createElement('em'); e.className = 'bd'; e.textContent = 'May libre'; h.append(e); }
     const ct = document.createElement('div'); ct.className = 'ct'; ct.textContent = p.contents + ' (' + kl(p.kilo) + ' lahat)';
     const pr = document.createElement('div'); pr.className = 'pp2'; pr.textContent = peso(p.price); if (sv > 0) { const o = document.createElement('s'); o.textContent = peso(reg); pr.append(o); }
-    const sg = document.createElement('div'); sg.className = 'sv'; sg.textContent = sv > 0 ? 'Tipid ₱' + sv + ' · ₱' + Math.round(p.price / p.kilo) + ' kada kilo' : '';
+    const sg = document.createElement('div'); sg.className = 'sv'; sg.textContent = sv > 0 ? 'Tipid ₱' + sv + ' (-' + Math.round(sv / reg * 100) + '%) · ₱' + Math.round(p.price / p.kilo) + ' kada kilo' : '';
     body.append(h, ct, pr, sg);
     const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Idagdag sa cart'; b.onclick = () => addPkg(p.id);
+    if (sv > 0) { const rb = document.createElement('span'); rb.className = 'rib'; rb.textContent = '-' + Math.round(sv / reg * 100) + '%'; c.append(rb); }
     c.append(im, body, b); bx.appendChild(c);
   });
   $('pkgBox').hidden = !PKGS.length;
@@ -544,7 +552,7 @@ async function loadFeed() {
     r.gallery.forEach(g => item($('gal'), g.url, [[g.caption]]));
     $('galSec').hidden = !r.gallery.length;
     MAIN = (r.products || []).find(p => p.main); PRODS = (r.products || []).filter(p => !p.main).sort((a, b) => a.kilo - b.kilo); GAL = r.gallery; PKGS = r.packages || []; drawPkgs();
-    drawShop(GAL); cart = cart.filter(l => l.pkg ? PK(l.pkg) : (!PRODS.length || PRODS.some(p => p.name === l.name))); renderCart();
+    drawShop(GAL); calc(); cart = cart.filter(l => l.pkg ? PK(l.pkg) : (!PRODS.length || PRODS.some(p => p.name === l.name))); renderCart();
     r.reviews.forEach(v => item($('revs'), v.photo, [['★'.repeat(v.stars) + '☆'.repeat(5 - v.stars), 'stars'], [v.text], [v.name]]));
     if (r.count) { $('avg').textContent = 'Average: ' + r.average + ' sa 5, mula sa ' + r.count + ' rating.'; $('stat').textContent = '★ ' + r.average + ' | ' + r.count + ' rating'; }
   } catch (e) { console.error(e); }
