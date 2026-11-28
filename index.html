@@ -286,7 +286,7 @@ footer a{color:var(--gc)}
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbygMIuAlYt3cAuQXsYd8_uCWQ4dN6H4Alr-z4_pk6tBNhRpYOWzFYWocjyj44H2weVNHg/exec';   // galing sa Apps Script > Deploy > Web app
+const API_URL = 'https://script.google.com/macros/s/AKfycbw7Fan0HREJ7zlt07xLJd_1Q7brR1UfAYQGfnN6MCLE2GComq7W3A9x5OxeaVeha4m_2w/exec';   // galing sa Apps Script > Deploy > Web app
 const $ = id => document.getElementById(id);
 let PRICE = 0, STEPS = [], TIERS = [];
 const PAY_EMAIL = 'joelazana68@gmail.com';
@@ -580,7 +580,8 @@ $('tf').addEventListener('submit', async ev => {
     if (r.eta) m.append(document.createElement('br'), 'Inaasahang dating: ' + r.eta);
     if (r.note) m.append(document.createElement('br'), 'Paalala: ' + r.note);
     const tl = $('tl'); tl.textContent = '';
-    STEPS.forEach((s, i) => { const li = document.createElement('li'); li.textContent = s; if (i <= r.status) li.className = 'on' + (i === r.status ? ' now' : ''); tl.appendChild(li); });
+    if (r.cancelled) { const li = document.createElement('li'); li.textContent = 'Kinansela ang order na ito.'; li.className = 'on now'; tl.appendChild(li); }
+    else STEPS.forEach((s, i) => { const li = document.createElement('li'); li.textContent = s; if (i <= r.status) li.className = 'on' + (i === r.status ? ' now' : ''); tl.appendChild(li); });
     $('tres').hidden = false;
   } catch (e) { te.textContent = e.message || 'Hindi mahanap ang order.'; }
   finally { $('tgo').disabled = false; }
